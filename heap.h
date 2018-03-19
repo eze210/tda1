@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <ostream>
+#include <cstdint>
 
 template <typename T> class Heap {
 public:
