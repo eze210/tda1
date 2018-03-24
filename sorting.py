@@ -47,3 +47,25 @@ def mergesort(l):
 	left = mergesort(l[:m])
 	right = mergesort(l[m:])
 	return merge(left, right)
+
+def quicksort(l):
+	_quicksort(l, 0, len(l) - 1)
+
+def _quicksort(l, start, end):
+	if (start >= end):
+		return
+
+	start_lesser = start
+	pivot = start
+
+	for x in range (start + 1, end + 1):
+		if (l[x] < l[pivot]):
+			start_lesser += 1
+			if (x != start_lesser):
+				swap(l, x, start_lesser)
+
+	if (pivot != start_lesser):
+		swap(l, pivot, start_lesser)
+
+	_quicksort(l, start, start_lesser - 1)
+	_quicksort(l, start_lesser + 1, end)
