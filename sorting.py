@@ -17,11 +17,33 @@ def insertion_sort(l):
 		swap(l, n, max_index)
 		n -= 1
 
-
 def selection_sort(l):
 	for i in range(len(l)):
 		j = i - 1
 		while (j >= 0 and l[j] < l[i]):
 			j -= 1
 		if (l[j] < l[i]):
-			swap(l, i, j) 
+			swap(l, i, j)
+
+def merge(l1, l2):
+	l = []
+	i = 0
+	j = 0
+
+	while (i < len(l1) and j < len(l2)):
+		if (l1[i] < l2[j]):
+			l.append(l1[i])
+			i += 1
+		else:
+			l.append(l2[j])
+			j += 1
+	
+	return l + l1[i:] + l2[j:] #syntactic sugar
+
+def mergesort(l):
+	if (len(l) <= 1):
+		return l
+	m = len(l)//2
+	left = mergesort(l[:m])
+	right = mergesort(l[m:])
+	return merge(left, right)
