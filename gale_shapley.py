@@ -20,8 +20,8 @@ class Man(object):
 		self.next_woman_index += 1
 		return next_woman
 
-	def print_couple(self):
-		print "(%s, %s)" % (self.name, self.woman)
+	def __repr__(self):
+		return self.name
 
 
 class Woman(object):
@@ -58,37 +58,65 @@ class Woman(object):
 			print "Woman %s keeps man %s and rejects %s" % (self.name, self.man.name, man.name)
 			return man
 
+	def __repr__(self):
+		return self.name
 
-def gale_shapley(women, men):
-	free_men = men
 
-	women_map = {}
-	for woman in women:
-		women_map[woman.name] = woman
+class GaleShapley(object):
 
-	while len(free_men) > 0:
-		new_free_men = []
-		for man in free_men:
-			woman = women_map[man.get_next_preference()]
-			sad = woman.try_set_man(man)
-			if sad != None:
-				new_free_men.append(sad)
+	def __init__(self, women, men):
+		self.women = women
+		self.men = men
 
-		free_men = new_free_men
+	def solve(self):
+		free_men = self.men
+	
+		women_map = {}
+		for woman in self.women:
+			women_map[woman.name] = woman
+	
+		while len(free_men) > 0:
+			new_free_men = []
+			for man in free_men:
+				woman = women_map[man.get_next_preference()]
+				sad = woman.try_set_man(man)
+				if sad != None:
+					new_free_men.append(sad)
+	
+			free_men = new_free_men
+	
+	def get_couples(self):
+		return [(w.man, w) for w in self.women]
 
-	for man in men:
-		man.print_couple()
 
 
 if __name__ == '__main__':
 	w1 = Woman('w1', ['m1', 'm2', 'm3'])
 	w2 = Woman('w2', ['m1', 'm2', 'm3'])
 	w3 = Woman('w3', ['m1', 'm2', 'm3'])
-	
 
 	m1 = Man('m1', ['w1', 'w2', 'w3'])
 	m2 = Man('m2', ['w1', 'w2', 'w3'])
 	m3 = Man('m3', ['w1', 'w2', 'w3'])
 	
-	gale_shapley(women = [w3, w2, w1],
-				 men = [m1, m3, m2])
+	gs1 = GaleShapley(women = [w3, w2, w1],
+					  men = [m1, m3, m2])
+	
+	w1 = Woman('w1', ['m1', 'm2'])
+	w2 = Woman('w2', ['m2', 'm1'])
+
+	m1 = Man('m1', ['w2', 'w1'])
+	m2 = Man('m2', ['w1', 'w2'])
+
+	gs2 = GaleShapley(women = [w1, w2],
+				 	  men = [m1, m2])
+
+	gs1.solve()
+	print gs1.get_couples()
+	print
+	print
+	gs2.solve()
+	print gs2.get_couples()
+	print
+	print
+	
