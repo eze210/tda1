@@ -24,7 +24,6 @@ class Man(object):
 		woman = women_map[self.get_next_preference()]
 		woman.try_set_man(self, on_fail, on_fail_context)
 
-
 	def __repr__(self):
 		return self.name
 
@@ -96,7 +95,6 @@ class GaleShapley(object):
 	
 	def get_couples(self):
 		return [(w.man, w) for w in self.women]
-
 
 
 if __name__ == '__main__':

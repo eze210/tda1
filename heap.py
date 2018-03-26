@@ -73,6 +73,9 @@ class MaxHeap(object):
 	def size(self):
 		return len(self.data)
 
+	def __repr__(self):
+		return repr(self.data)
+
 def comp(elem1, elem2):
 	if elem1 < elem2:
 		return -1
