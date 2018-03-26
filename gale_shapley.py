@@ -114,7 +114,7 @@ if __name__ == '__main__':
 	print gs1.get_couples()
 	print
 	print
-	
+
 	w1 = Woman('w1', ['m1', 'm2'])
 	w2 = Woman('w2', ['m2', 'm1'])
 
@@ -125,6 +125,19 @@ if __name__ == '__main__':
 				 	  men = [m1, m2])
 	gs2.solve()
 	print gs2.get_couples()
+	print
+	print
+	
+	w1 = Woman('w1', ['m1', 'm2'])
+	w2 = Woman('w2', ['m2', 'm1'])
+
+	m1 = Man('m1', ['w1', 'w2'])
+	m2 = Man('m2', ['w1', 'w2'])
+
+	gs3 = GaleShapley(women = [w1, w2],
+				 	  men = [m1, m2])
+	gs3.solve()
+	print gs3.get_couples()
 	print
 	print
 	
