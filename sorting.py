@@ -81,17 +81,10 @@ def comp(elem1, elem2):
 		return 1
 
 def heapsort(l):
-	h = heap.MaxHeap(comp, l)
-	i = 0
-	while (h.size() > 0):
-		value = h.pop()
-		l[i] = value
-		i += 1
+	heap.MaxHeap(comp, l).heapsort()
+	return l
 
-l = [10,2,1,6,7,7,15,4,4,3,9]
-heapsort(l)
-print(l)
-
-
-
-
+if __name__ == '__main__':
+	l = [10,2,1,6,7,7,15,4,4,3,9]
+	heapsort(l)
+	print(l)

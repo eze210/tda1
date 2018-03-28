@@ -3,7 +3,8 @@ class MaxHeap(object):
 
 	def __init__(self, comparison_callback, data = None):
 		self.comparison_callback = comparison_callback
-		self.data = data[:] or []
+		self.data = data or []
+		self.length = len(self.data)
 		self.heapify()
 
 	def heapify(self):
@@ -11,8 +12,9 @@ class MaxHeap(object):
 			self.downheap(x)
 
 	def add(self, elem):
-		position = len(self.data);
+		position = self.length;
 		self.data.append(elem)
+		self.length += 1
 		self.upheap(position)
 
 	def upheap(self, pos):
@@ -58,9 +60,11 @@ class MaxHeap(object):
 		elem = self.data[0]
 		if self.size() > 1:
 			self.data[0] = self.data.pop()
+			self.length -= 1
 			self.downheap(0)
 		else:
 			self.data.pop()
+			self.length -= 1
 		return elem
 
 	def parent(self, pos):
@@ -76,13 +80,22 @@ class MaxHeap(object):
 		return (self.right_child(pos) >= self.size()) and (self.left_child(pos) >= self.size())
 
 	def size(self):
-		return len(self.data)
+		return self.length
+
+	def heapsort(self):
+		while self.size() > 1:
+			self._swap(0, self.size() - 1)
+			self.length -= 1
+			self.downheap(0)
+
+		self.length = 0
 
 	def _swap(self, n1, n2):
 		self.data[n1], self.data[n2] = self.data[n2], self.data[n1]
 
 	def __repr__(self):
 		return repr(self.data)
+
 
 def comp(elem1, elem2):
 	if elem1 < elem2:
@@ -92,18 +105,25 @@ def comp(elem1, elem2):
 	else:
 		return 1
 
+
 if __name__ ==  '__main__':
 	h = MaxHeap(comp)
+	h.add(2)
 	h.add(1)
 	h.add(2)
 	h.add(3)
 	h.add(4)
 	h.add(1)
 	h.add(2)
+	h.add(4)
 	h.add(1)
+	h.add(3)
 	h.add(3)
 	h.add(4)
 
 	while h.size() > 0:
 		print(h.pop())
 
+	a = [5,6,3,34,123,65,54,62,6,543,3,7364,4,73,67,67,67]
+	MaxHeap(comp, a).heapsort()
+	print a
