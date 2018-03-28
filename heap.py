@@ -3,7 +3,7 @@ class MaxHeap(object):
 
 	def __init__(self, comparison_callback, data = None):
 		self.comparison_callback = comparison_callback
-		self.data = data or []
+		self.data = data[:] or []
 		self.heapify()
 
 	def heapify(self):
