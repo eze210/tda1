@@ -1,3 +1,5 @@
+import heap 
+
 def maximum(l, n):
 	max_index = 0
 
@@ -69,3 +71,27 @@ def _quicksort(l, start, end):
 
 	_quicksort(l, start, start_lesser - 1)
 	_quicksort(l, start_lesser + 1, end)
+
+def comp(elem1, elem2):
+	if elem1 > elem2:
+		return -1
+	elif elem1 == elem2:
+		return 0
+	else:
+		return 1
+
+def heapsort(l):
+	h = heap.MaxHeap(comp, l)
+	i = 0
+	while (h.size() > 0):
+		value = h.pop()
+		l[i] = value
+		i += 1
+
+l = [10,2,1,6,7,7,15,4,4,3,9]
+heapsort(l)
+print(l)
+
+
+
+
