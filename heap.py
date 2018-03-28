@@ -88,7 +88,7 @@ class MaxHeap(object):
 			self.length -= 1
 			self.downheap(0)
 
-		self.length = 0
+		self.length = len(self.data)
 
 	def _swap(self, n1, n2):
 		self.data[n1], self.data[n2] = self.data[n2], self.data[n1]
