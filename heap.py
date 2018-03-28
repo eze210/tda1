@@ -81,6 +81,9 @@ class MaxHeap(object):
 	def _swap(self, n1, n2):
 		self.data[n1], self.data[n2] = self.data[n2], self.data[n1]
 
+	def __repr__(self):
+		return repr(self.data)
+
 def comp(elem1, elem2):
 	if elem1 < elem2:
 		return -1
