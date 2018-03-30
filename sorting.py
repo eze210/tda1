@@ -12,14 +12,14 @@ def maximum(l, n):
 def swap(l, n1, n2):
 	l[n1], l[n2] = l[n2], l[n1]
 
-def insertion_sort(l):
+def selection_sort(l):
 	n = len(l) - 1
 	while n > 0:
 		max_index = maximum(l, n)
 		swap(l, n, max_index)
 		n -= 1
 
-def selection_sort(l):
+def insertion_sort(l):
 	for i in range(len(l)):
 		j = i - 1
 		while (j >= 0 and l[j] < l[i]):
