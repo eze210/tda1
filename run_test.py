@@ -26,7 +26,6 @@ data = copy(basedata)
 """
 
 
-
 def test(algorithm, basedata_func, seed=None):
 	"""Runs the test on a given `algorithm` with the given `basedata`."""
 
@@ -67,7 +66,6 @@ if __name__ == '__main__':
 		exit(1)
 
 	seed, test_type, algorithm = int(sys.argv[1]), sys.argv[2], sys.argv[3]
-	print(seed, test_type, algorithm)
 
 	if (algorithm not in ALGORITHMS) or (test_type not in TESTS):
 		if algorithm not in ALGORITHMS:
@@ -79,7 +77,7 @@ if __name__ == '__main__':
 	
 	if test_type == "ordenado":
 		test_ordered_data(algorithm)
-	elif test_type == "ordenado_inverso":
+	if test_type == "ordenado_inverso":
 		test_inverse_ordered_data(algorithm)
 	else:
 		test_basic(algorithm, seed)

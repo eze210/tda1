@@ -59,7 +59,6 @@ def _quicksort(l, start, end):
 
 	start_lesser = start
 	pivot = start
-
 	for x in range (start + 1, end + 1):
 		if (l[x] < l[pivot]):
 			start_lesser += 1
@@ -72,8 +71,8 @@ def _quicksort(l, start, end):
 	_quicksort(l, start, start_lesser - 1)
 	_quicksort(l, start_lesser + 1, end)
 
-def _comp(elem1, elem2):
-	if elem1 > elem2:
+def comp(elem1, elem2):
+	if elem1 < elem2:
 		return -1
 	elif elem1 == elem2:
 		return 0
@@ -81,7 +80,7 @@ def _comp(elem1, elem2):
 		return 1
 
 def heapsort(l):
-	heap.MaxHeap(_comp, l).heapsort()
+	heap.MaxHeap(comp, l).heapsort()
 	return l
 
 if __name__ == '__main__':
