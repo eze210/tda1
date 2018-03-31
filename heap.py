@@ -45,7 +45,7 @@ class MaxHeap(object):
 
 		if not self.do_satisfy_invariant(to_swap, pos):
 			self.data[pos], self.data[to_swap] = self.data[to_swap], self.data[pos]
-			self.downheap(to_swap);			
+			self.downheap(to_swap);
 
 	def do_satisfy_invariant(self, idx1, idx2):
 		parent = idx1 if idx1 < idx2 else idx2;
@@ -126,4 +126,4 @@ if __name__ ==  '__main__':
 
 	a = [5,6,3,34,123,65,54,62,6,543,3,7364,4,73,67,67,67]
 	MaxHeap(comp, a).heapsort()
-	print a
+	print(a)
