@@ -11,11 +11,11 @@ USAGE = """
 Calcula los tiempos de ejecución de un algoritmo de ordenamiento para distintos
 tamaños de listas, promediando entre varias ejecuciones.
 
-Uso: ./run_test.py semilla algoritmo
+Uso: ./{} semilla algoritmo
 
   semilla       La semilla utilizada para generar los datos (int).
   algoritmo     El algoritmo al cuál ejecutarle las pruebas:
-                  * """ + '\n                  * '.join(ALGORITHMS)
+                  * """.format(__file__) + '\n                  * '.join(ALGORITHMS)
 
 TIMEIT_SETUP = """
 from copy import copy
@@ -43,6 +43,9 @@ def test(algorithm, seed):
 
 
 if __name__ == '__main__':
+    if '--help' in sys.argv or '-h' in sys.argv:
+        print(USAGE)
+        exit(0)
     if len(sys.argv) != 3:
         print(USAGE)
         exit(1)
@@ -50,6 +53,7 @@ if __name__ == '__main__':
     seed, algorithm = int(sys.argv[1]), sys.argv[2]
     if algorithm not in ALGORITHMS:
         print('Algoritmo "{}" no soportado'.format(algorithm))
+        print("Usar './{} --help' para ver las opciones".format(__file__))
         exit(1)
 
     test(algorithm, seed)
