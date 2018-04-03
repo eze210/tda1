@@ -21,6 +21,11 @@ def get_data(n, seed=None):
     random.shuffle(l)
     return l
 
+def get_inverse_ordered_data(n):
+    return [n-i for i in range(n)]
+
+def get_ordered_data(n):
+    return [i for i in range(n)]
 
 if __name__ == '__main__':
     if len(sys.argv) not in (3, 4):
