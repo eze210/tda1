@@ -1,15 +1,17 @@
 # coding: utf-8
 
 import sys
-import timeit
+import time
 import dataset
 import sorting
 
 
+# gets the list of supported sorting algorithms from the `sorting` module
 ALGORITHMS = [f for f in dir(sorting) if callable(getattr(sorting, f)) and not f.startswith('_')]
 USAGE = """
 Calcula los tiempos de ejecución de un algoritmo de ordenamiento para distintos
-tamaños de listas, promediando entre varias ejecuciones.
+tamaños de listas.
+Ejecuta 100 para cada `n` y toma la menor de las mediciones.
 
 Uso: ./{} semilla algoritmo
 
@@ -17,29 +19,33 @@ Uso: ./{} semilla algoritmo
   algoritmo     El algoritmo al cuál ejecutarle las pruebas:
                   * """.format(__file__) + '\n                  * '.join(ALGORITHMS)
 
-TIMEIT_SETUP = """
-from copy import copy
-from sorting import {algorithm}
-
-data = copy(basedata)
-"""
-
 
 def test(algorithm, seed):
     """Runs the test on a given `algorithm`, obtaining a dataset with the given `seed`."""
 
+    # gets the function using the name
+    algorithm_fn = getattr(sorting, algorithm)
+
+    # number of iterations to run
     iterations = 100
 
     print(algorithm)
     print('n,time (ms)')
     for n in (50, 100, 500, 1000, 2000, 3000, 4000, 5000, 7500, 10000):
-        basedata = dataset.get_data(10000, seed=seed)[:n]
+        measurements = []
+        for _ in range(iterations):
+            # builds the dataset
+            data = dataset.get_data(10000, seed=seed)[:n]
 
-        rv = timeit.timeit('{}(data)'.format(algorithm),
-                           setup=TIMEIT_SETUP.format(algorithm=algorithm),
-                           number=iterations,
-                           globals={'basedata': basedata})
-        print('{},{:.4f}'.format(n, rv/iterations * 1000))
+            # runs the algorithm
+            start = time.perf_counter()
+            algorithm_fn(data)
+            elapsed = time.perf_counter() - start
+
+            measurements.append(elapsed)
+
+        # prints the minimun result
+        print('{},{:.4f}'.format(n, min(measurements) * 1000))
 
 
 if __name__ == '__main__':
