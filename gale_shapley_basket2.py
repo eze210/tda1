@@ -81,7 +81,7 @@ class GaleShapleyBasket(object):
 		self.players = players
 
 	def on_rejected_team(self, team, teams_with_space):
-		teams_with_space.append(team)
+		teams_with_space.add(team)
 
 	def solve(self):
 		teams_with_space = self.teams
@@ -91,7 +91,7 @@ class GaleShapleyBasket(object):
 			players_map[player.name] = player
 	
 		while len(teams_with_space) > 0:
-			new_teams_with_space = []
+			new_teams_with_space = set()
 			for team in teams_with_space:
 				team.try_with_next_players(players_map, self.on_rejected_team, new_teams_with_space)
 	
@@ -116,6 +116,6 @@ if __name__ == '__main__':
 	t2 = Team('t2', ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'], 3)
 	t3 = Team('t3', ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'], 3)
 
-	gsb = GaleShapleyBasket(teams=[t1, t2, t3], players=[p1, p2, p3, p4, p5, p6, p7, p8, p9])
+	gsb = GaleShapleyBasket(teams=[t2, t3, t1], players=[p1, p2, p3, p4, p5, p6, p7, p8, p9])
 	gsb.solve()
 	print gsb.get_teams()
