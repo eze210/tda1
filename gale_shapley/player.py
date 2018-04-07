@@ -17,7 +17,7 @@ class Player(object):
 
 	def try_set_team(self, team, rejected_team_callback=None, callback_context=None):
 		if self.is_free():
-			print "Free player %s goes to team %s" % (self.name, team.name)
+			print(f"Free player {self.name} goes to team {team.name}")
 			self.team = team
 			team.add_player(self.name)
 
@@ -25,14 +25,14 @@ class Player(object):
 			rejected = self.team
 			rejected.remove_player(self.name)
 
-			print "Player %s changes team %s by %s" % (self.name, rejected.name, team.name)
+			print(f"Player {self.name} changes team {rejected.name} by {team.name}")
 			self.team = team
 			team.add_player(self.name)
 			if rejected_team_callback != None:
 				rejected_team_callback(rejected, callback_context)
 
 		else:
-			print "Player %s keeps team %s and rejects %s" % (self.name, self.team.name, team.name)
+			print(f"Player {self.name} keeps team {self.team.name} and rejects {team.name}")
 			if rejected_team_callback != None:
 				rejected_team_callback(team, callback_context)
 

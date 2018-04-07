@@ -12,18 +12,18 @@ class GaleShapley(object):
 
 	def solve(self):
 		teams_with_space = self.teams
-	
+
 		players_map = {}
 		for player in self.players:
 			players_map[player.name] = player
-	
+
 		while len(teams_with_space) > 0:
 			new_teams_with_space = set()
 			for team in teams_with_space:
 				team.try_with_next_players(players_map, self.on_rejected_team, new_teams_with_space)
-	
+
 			teams_with_space = new_teams_with_space
-	
+
 	def get_teams(self):
 		return [(team.players, team) for team in self.teams]
 
@@ -45,4 +45,4 @@ if __name__ == '__main__':
 
 	gsb = GaleShapley(teams=[t2, t3, t1], players=[p1, p2, p3, p4, p5, p6, p7, p8, p9])
 	gsb.solve()
-	print gsb.get_teams()
+	print(gsb.get_teams())
