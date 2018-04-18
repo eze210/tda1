@@ -1,4 +1,5 @@
 class Player(object):
+	"""Class representing a basketball player"""
 
 	def __init__(self, name, preferences):
 		self.name = name

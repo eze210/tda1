@@ -2,6 +2,7 @@ from team import Team
 from player import Player
 
 class GaleShapley(object):
+	"""Class to encapsulate the state, the algorithm and the results of GaleShapley"""
 
 	def __init__(self, teams, players):
 		self.teams = teams
