@@ -1,9 +1,10 @@
 class Team(object):
+	"""Class representing a basketball team"""
 
 	def __init__(self, name, preferences, max_players_num = 10):
 		self.name = name
 		self.preferences = preferences
-		self.players = []
+		self.players = set()
 		self.next_player_index = 0
 		self.max_players_num = max_players_num
 
@@ -11,7 +12,7 @@ class Team(object):
 		return len(self.players) < self.max_players_num
 
 	def add_player(self, player):
-		self.players.append(player)
+		self.players.add(player)
 
 	def remove_player(self, player):
 		self.players.remove(player)
