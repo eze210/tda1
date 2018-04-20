@@ -21,6 +21,7 @@ FUNC puede tomar los valores:
   * nlogn (n*log(n))
 """
 
+import os
 import sys
 import numpy as np
 import matplotlib
@@ -65,11 +66,13 @@ def fit(b, n, f):
     return least_squares(x, b).flatten()[0]
 
 
-def plot(n, b, k, func):
+def plot(n, b, k, func, alg_name):
     plt.scatter(n, b, label='mediciones')
-    plt.plot(n, k * func(n), 'r', label=f'$k {func.__name__}$ (k={k:.4g})')
 
-    plt.title(alg_name.capitalize())
+    x = np.linspace(n[0], n[-1], num=100)
+    plt.plot(x, k * func(x), 'r', label=f'$k {func.__name__}$ (k={k:.4g})')
+
+    plt.title(alg_name.replace('_', ' ').capitalize())
     plt.legend()
     plt.xlabel('n')
     plt.ylabel('Tiempo (ms)')
@@ -87,11 +90,11 @@ if __name__ == '__main__':
         exit(1)
 
     csv_file, func = sys.argv[1], sys.argv[2]
-    alg_name = csv_file.replace('.csv', '')
+    alg_name = os.path.basename(csv_file).replace('.csv', '')
 
     func = globals()[func]
     b, n = parse_csv(csv_file)
     k = fit(b, n, func)
 
-    plot(n, b, k, func)
+    plot(n, b, k, func, alg_name)
     print(f'k={k}')
