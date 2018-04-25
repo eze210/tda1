@@ -14,34 +14,32 @@ class _Vertex(object):
 
 	def __str__(self):
 		return str(self.x)+' '+str(self.y)
-		
+
 
 class Graph(object):
 
-	def __init__(self, arch_name = "", real_distance = False):
+	def __init__(self, file_name = "", real_distance = False):
 		self.vertices = []
 		self.edges = {}
 
-		if arch_name:
-			file = open(arch_name,”r”)
+		if file_name:
+			with open(file_name, "r") as file:
+				for line in file:
+					coord = line.split('-')
+					coord1 = coord[0].split()
+					coord2 = coord[1].split()
 
-			for line in file:
-				coord = line.split('-')
-				coord1 = coord[0].split()
-				coord2 = coord[1].split()
-				
-				vertex1 = Vertex(int(coord1[0]), int(coord1[1]))
-				vertex2 = Vertex(int(coord2[0]), int(coord2[1]))
+					vertex1 = Vertex(int(coord1[0]), int(coord1[1]))
+					vertex2 = Vertex(int(coord2[0]), int(coord2[1]))
 
-				self.addVertex(vertex1)
-				self.addVertex(vertex2)
+					self.addVertex(vertex1)
+					self.addVertex(vertex2)
 
-				if (real_distance):
-					self.addEdge(vertex1, vertex2, vertex1.distance(vertex2))
-				else:
-					self.addEdge(vertex1, vertex2, 1)
+					if (real_distance):
+						self.addEdge(vertex1, vertex2, vertex1.distance(vertex2))
+					else:
+						self.addEdge(vertex1, vertex2, 1)
 
-			file.close()
 
 	def addVertex(self, vertex):
 		self.vertices.append(vertex)
@@ -63,12 +61,8 @@ class Graph(object):
 			return False
 		return True
 
-	def storeInArchive(self, arch_name):
-		file = open(arch_name,”w”)
-
-		for vertex1 in self.edges:
-		 	for vertex2 in self.edges[vertex1]:
-		 		file.write(str(vertex1)+'-'+str(vertex2))
-
-		file.close()
-
+	def dump(self, file_name):
+		with open(file_name, "w") as file:
+			for vertex1 in self.edges:
+				for vertex2 in self.edges[vertex1]:
+					file.write(str(vertex1)+'-'+str(vertex2))
