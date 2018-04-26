@@ -40,6 +40,14 @@ class Dijkstra(SearchHandler):
 	def getStructure(self):
 		return MaxHeap(self.comparisonBetweenVertices)
 
+	def getShortestPath(self, vertex):
+		if vertex == None:
+			return []
+
+		path = self.getShortestPath(self.parents[vertex])
+		path.append(vertex)
+		return path
+
 	def comparisonBetweenVertices(self, vertex1, vertex2):
 		if self.getDistance(vertex1) < self.getDistance(vertex2):
 			return 1
@@ -56,14 +64,16 @@ if __name__ == '__main__':
 	assert Infinite() != Infinite()
 
 	graph = Graph()
-
 	root = Vertex(1, 1)
 	graph.addVertex(root)
 
+	vertex = None
 	for x in range(1,10):
-		v = Vertex(x, 1)
-		graph.addVertex(v)
-		graph.addEdge(root, v, root.distance(v))
+		vertex = Vertex(x, 1)
+		graph.addVertex(vertex)
+		graph.addEdge(root, vertex, root.distance(vertex))
 
-	d = Dijkstra(graph, root)
-	print(d())
+	dijkstra = Dijkstra(graph, root)
+	print(dijkstra())
+
+	print(dijkstra.getShortestPath(vertex))
