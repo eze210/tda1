@@ -1,4 +1,6 @@
 from math import sqrt
+from queue import Queue
+from stack import Stack
 
 class Vertex(object):
 
@@ -20,6 +22,28 @@ class Vertex(object):
 
 	def __hash__(self):
 		return hash((self.x, self.y))
+
+
+class SearchHandler(object):
+	
+	def __init__(self):
+		self.visited = set()
+
+	def onVisit(self, vertex):
+		print("Visit vertex: {}".format(vertex))
+		self.visited.add(vertex)
+
+	def isVisited(self, vertex):
+		return (vertex in self.visited)
+
+	def onAdjacentAlreadyVisited(self, vertex, adjacent):
+		pass
+
+	def onAdjacentNotVisitedYet(self, vertex, adjacent):
+		pass
+
+	def postVisit(self, vertex):
+		pass
 
 
 class Graph(object):
@@ -79,3 +103,52 @@ class Graph(object):
 
 	def getVertices(self):
 		return self.vertices
+
+	def iterate(self, first, searchHandler, structure):
+		structure.push(first)
+
+		while not structure.empty():
+			vertex = structure.pop()
+			searchHandler.onVisit(vertex)
+
+			for adjacent in self.getAdjacents(vertex):
+				if searchHandler.isVisited(adjacent):
+					searchHandler.onAdjacentAlreadyVisited(vertex, adjacent)
+				else:
+					searchHandler.onAdjacentNotVisitedYet(vertex, adjacent)
+					structure.push(adjacent)
+
+			searchHandler.postVisit(vertex)
+
+	def breadthFirstSearch(self, first, searchHandler):
+		self.iterate(first, searchHandler, Queue())
+
+	def depthFirstSearch(self, first, searchHandler):
+		self.iterate(first, searchHandler, Stack())
+
+
+
+if __name__ == '__main__':
+	graph = Graph()
+
+	root = Vertex(1, 0)
+	graph.addVertex(root)
+
+	for x in xrange(1,10):
+		v = Vertex(x, 1)
+		graph.addVertex(v)
+		graph.addEdge(root, v, root.distance(v))
+		graph.addEdge(v, root, root.distance(v))
+
+		u = Vertex(x, 2)
+		graph.addVertex(u)
+		graph.addEdge(u, root, root.distance(u))
+		graph.addEdge(v, u, v.distance(u))
+
+		w = Vertex(x, 3)
+		graph.addVertex(w)
+		graph.addEdge(u, w, w.distance(u))
+
+	graph.breadthFirstSearch(root, SearchHandler())
+	print("--------------")
+	graph.depthFirstSearch(root, SearchHandler())

@@ -76,4 +76,4 @@ if __name__ == '__main__':
 		graph.addEdge(root, v, root.distance(v))
 
 	d = Dijkstra(graph, root)
-	print d()
+	print(d())
