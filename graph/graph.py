@@ -167,7 +167,6 @@ class Graph(object):
 		self.iterate(first, DFSSearchHandler())
 
 
-
 if __name__ == '__main__':
 	graph = Graph()
 
@@ -192,3 +191,7 @@ if __name__ == '__main__':
 	graph.breadthFirstSearch(root)
 	print("--------------")
 	graph.depthFirstSearch(root)
+
+	from plot import Plotter
+	p = Plotter(graph)
+	p.plot()
