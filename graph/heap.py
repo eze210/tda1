@@ -11,7 +11,7 @@ class MaxHeap(object):
 		for x in range ((self.size()//2) - 1, -1, -1):
 			self.downheap(x)
 
-	def add(self, elem):
+	def push(self, elem):
 		position = self.length;
 		self.data.append(elem)
 		self.length += 1
@@ -90,11 +90,17 @@ class MaxHeap(object):
 
 		self.length = len(self.data)
 
+	def empty(self):
+		return len(self) == 0
+
 	def _swap(self, n1, n2):
 		self.data[n1], self.data[n2] = self.data[n2], self.data[n1]
 
 	def __repr__(self):
 		return repr(self.data)
+
+	def __len__(self):
+		return self.length
 
 
 def comp(elem1, elem2):
@@ -108,18 +114,18 @@ def comp(elem1, elem2):
 
 if __name__ ==  '__main__':
 	h = MaxHeap(comp)
-	h.add(2)
-	h.add(1)
-	h.add(2)
-	h.add(3)
-	h.add(4)
-	h.add(1)
-	h.add(2)
-	h.add(4)
-	h.add(1)
-	h.add(3)
-	h.add(3)
-	h.add(4)
+	h.push(2)
+	h.push(1)
+	h.push(2)
+	h.push(3)
+	h.push(4)
+	h.push(1)
+	h.push(2)
+	h.push(4)
+	h.push(1)
+	h.push(3)
+	h.push(3)
+	h.push(4)
 
 	while h.size() > 0:
 		print(h.pop())

@@ -27,23 +27,62 @@ class Vertex(object):
 class SearchHandler(object):
 	
 	def __init__(self):
+		pass
+
+	def onVisit(self, vertex):
+		print("Visit vertex: {}".format(vertex))
+
+	def onAdjacent(self, vertex, adjacent):
+		pass
+
+	def shouldPushAdjacent(self, vertex, adjacent):
+		pass
+
+	def prePushAdjacent(self, vertex, adjacent):
+		pass
+
+	def postPushAdjacent(self, vertex, adjacent):
+		pass
+
+	def postVisit(self, vertex):
+		pass
+
+	def getStructure(self):
+		pass
+
+
+class BFSSearchHandler(SearchHandler):
+
+	def __init__(self):
+		super(BFSSearchHandler, self).__init__()
 		self.visited = set()
 
 	def onVisit(self, vertex):
 		print("Visit vertex: {}".format(vertex))
 		self.visited.add(vertex)
 
-	def isVisited(self, vertex):
-		return (vertex in self.visited)
+	def shouldPushAdjacent(self, vertex, adjacent):
+		return adjacent not in self.visited
 
-	def onAdjacentAlreadyVisited(self, vertex, adjacent):
-		pass
+	def getStructure(self):
+		return Queue()
 
-	def onAdjacentNotVisitedYet(self, vertex, adjacent):
-		pass
 
-	def postVisit(self, vertex):
-		pass
+class DFSSearchHandler(SearchHandler):
+
+	def __init__(self):
+		super(DFSSearchHandler, self).__init__()
+		self.visited = set()
+
+	def onVisit(self, vertex):
+		print("Visit vertex: {}".format(vertex))
+		self.visited.add(vertex)
+
+	def shouldPushAdjacent(self, vertex, adjacent):
+		return adjacent not in self.visited
+
+	def getStructure(self):
+		return Stack()
 
 
 class Graph(object):
@@ -104,7 +143,8 @@ class Graph(object):
 	def getVertices(self):
 		return self.vertices
 
-	def iterate(self, first, searchHandler, structure):
+	def iterate(self, first, searchHandler):
+		structure = searchHandler.getStructure()
 		structure.push(first)
 
 		while not structure.empty():
@@ -112,19 +152,19 @@ class Graph(object):
 			searchHandler.onVisit(vertex)
 
 			for adjacent in self.getAdjacents(vertex):
-				if searchHandler.isVisited(adjacent):
-					searchHandler.onAdjacentAlreadyVisited(vertex, adjacent)
-				else:
-					searchHandler.onAdjacentNotVisitedYet(vertex, adjacent)
+				searchHandler.onAdjacent(vertex, adjacent)
+				if searchHandler.shouldPushAdjacent(vertex, adjacent):
+					searchHandler.prePushAdjacent(vertex, adjacent)
 					structure.push(adjacent)
-
+					searchHandler.postPushAdjacent(vertex, adjacent)
+					
 			searchHandler.postVisit(vertex)
 
-	def breadthFirstSearch(self, first, searchHandler):
-		self.iterate(first, searchHandler, Queue())
+	def breadthFirstSearch(self, first):
+		self.iterate(first, BFSSearchHandler())
 
-	def depthFirstSearch(self, first, searchHandler):
-		self.iterate(first, searchHandler, Stack())
+	def depthFirstSearch(self, first):
+		self.iterate(first, DFSSearchHandler())
 
 
 
@@ -134,7 +174,7 @@ if __name__ == '__main__':
 	root = Vertex(1, 0)
 	graph.addVertex(root)
 
-	for x in xrange(1,10):
+	for x in range(1,10):
 		v = Vertex(x, 1)
 		graph.addVertex(v)
 		graph.addEdge(root, v, root.distance(v))
@@ -149,6 +189,6 @@ if __name__ == '__main__':
 		graph.addVertex(w)
 		graph.addEdge(u, w, w.distance(u))
 
-	graph.breadthFirstSearch(root, SearchHandler())
+	graph.breadthFirstSearch(root)
 	print("--------------")
-	graph.depthFirstSearch(root, SearchHandler())
+	graph.depthFirstSearch(root)
