@@ -14,7 +14,7 @@ class Plotter(object):
 	
 	def plot(self):
 		drawableGraph = nx.DiGraph()
-
+		drawableGraph.add_nodes_from(self.graph.vertices)
 		for v in self.graph.vertices:
 			adjs = self.graph.edges[v]
 			for a in adjs:

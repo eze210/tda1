@@ -10,7 +10,6 @@ class Vertex(object):
 	def distance(self, other):
 		deltax = self.x - other.x
 		deltay = self.y - other.y
-
 		return sqrt((deltax**2) + (deltay**2))
 
 	def __str__(self):
@@ -21,6 +20,9 @@ class Vertex(object):
 
 	def __hash__(self):
 		return hash((self.x, self.y))
+
+	def __eq__(self, other):
+		return hash(self) == hash(other)
 
 
 class SearchHandler(object):
@@ -75,8 +77,9 @@ class Graph(object):
 						self.addEdge(vertex1, vertex2, 1)
 
 	def addVertex(self, vertex):
-		self.vertices.append(vertex)
-		self.edges[vertex] = {}
+		if not vertex in self.vertices:
+			self.vertices.append(vertex)
+			self.edges[vertex] = {}
 
 	def addEdge(self, vertex1, vertex2, weight):
 		if (not ((vertex1 in self.vertices) and (vertex2 in self.vertices))):
@@ -100,7 +103,7 @@ class Graph(object):
 		with open(file_name, "w") as file:
 			for vertex1 in self.edges:
 				for vertex2 in self.edges[vertex1]:
-					file.write(str(vertex1)+'-'+str(vertex2))
+					file.write(str(vertex1)+' - '+str(vertex2) + '\n')
 
 	def getAdjacents(self, vertex):
 		return self.edges[vertex]
@@ -151,5 +154,8 @@ def defaultGraph():
 
 
 if __name__ == '__main__':
+	assert hash(Vertex(0, 0)) == hash(Vertex(0, 0))
+	assert Vertex(0, 0) == Vertex(0, 0)
+	assert (0, 0) == (0, 0)
 	graph = defaultGraph()
 	print(graph)

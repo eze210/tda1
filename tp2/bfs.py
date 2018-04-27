@@ -21,4 +21,3 @@ class BFSSearchHandler(SearchHandler):
 if __name__ == '__main__':
 	graph, root = defaultGraph()
 	graph.iterate(root, BFSSearchHandler())
-
