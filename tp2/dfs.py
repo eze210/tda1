@@ -9,7 +9,6 @@ class DFSSearchHandler(SearchHandler):
 		self.visited = set()
 
 	def onVisit(self, vertex):
-		print("Visit vertex: {}".format(vertex))
 		self.visited.add(vertex)
 
 	def shouldPushAdjacent(self, vertex, adjacent):

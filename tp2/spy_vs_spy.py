@@ -5,10 +5,8 @@ from bfs import BFSSearchHandler
 
 
 def spyVsSpy(mapGraph=None, airportVertex=None, spy1Vertex=None, spy2Vertex=None):
-    Plotter(mapGraph).plot()
-    bfs = BFSSearchHandler()
-    mapGraph.iterate(spy1Vertex, bfs)
-    mapGraph.iterate(spy2Vertex, bfs)
+    print("Spy 1 arrives in {} steps.".format(mapGraph.iterate(spy1Vertex, BFSSearchHandler()).getLevel(airportVertex)))
+    print("Spy 2 arrives in {} steps.".format(mapGraph.iterate(spy2Vertex, BFSSearchHandler()).getLevel(airportVertex)))
 
 
 if __name__ == '__main__':

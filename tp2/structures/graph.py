@@ -127,6 +127,8 @@ class Graph(object):
 					searchHandler.postPushAdjacent(vertex, adjacent)
 					
 			searchHandler.postVisit(vertex)
+		
+		return searchHandler
 
 
 def defaultGraph():
