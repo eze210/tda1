@@ -1,4 +1,3 @@
-
 class MaxHeap(object):
 
 	def __init__(self, comparison_callback, data = None):

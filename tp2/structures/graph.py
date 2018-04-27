@@ -1,6 +1,5 @@
 from math import sqrt
-from queue import Queue
-from stack import Stack
+
 
 class Vertex(object):
 
@@ -49,40 +48,6 @@ class SearchHandler(object):
 
 	def getStructure(self):
 		pass
-
-
-class BFSSearchHandler(SearchHandler):
-
-	def __init__(self):
-		super(BFSSearchHandler, self).__init__()
-		self.visited = set()
-
-	def onVisit(self, vertex):
-		print("Visit vertex: {}".format(vertex))
-		self.visited.add(vertex)
-
-	def shouldPushAdjacent(self, vertex, adjacent):
-		return adjacent not in self.visited
-
-	def getStructure(self):
-		return Queue()
-
-
-class DFSSearchHandler(SearchHandler):
-
-	def __init__(self):
-		super(DFSSearchHandler, self).__init__()
-		self.visited = set()
-
-	def onVisit(self, vertex):
-		print("Visit vertex: {}".format(vertex))
-		self.visited.add(vertex)
-
-	def shouldPushAdjacent(self, vertex, adjacent):
-		return adjacent not in self.visited
-
-	def getStructure(self):
-		return Stack()
 
 
 class Graph(object):
@@ -160,14 +125,8 @@ class Graph(object):
 					
 			searchHandler.postVisit(vertex)
 
-	def breadthFirstSearch(self, first):
-		self.iterate(first, BFSSearchHandler())
 
-	def depthFirstSearch(self, first):
-		self.iterate(first, DFSSearchHandler())
-
-
-if __name__ == '__main__':
+def defaultGraph():
 	graph = Graph()
 
 	root = Vertex(1, 0)
@@ -188,10 +147,9 @@ if __name__ == '__main__':
 		graph.addVertex(w)
 		graph.addEdge(u, w, w.distance(u))
 
-	graph.breadthFirstSearch(root)
-	print("--------------")
-	graph.depthFirstSearch(root)
+	return graph, root
 
-	from plot import Plotter
-	p = Plotter(graph)
-	p.plot()
+
+if __name__ == '__main__':
+	graph = defaultGraph()
+	print(graph)

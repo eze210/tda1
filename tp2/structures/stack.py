@@ -1,5 +1,6 @@
 from collections import deque, Iterable
 
+
 class Stack(object):
 
 	def __init__(self, **kwargs):

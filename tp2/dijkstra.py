@@ -1,5 +1,6 @@
-from graph import Graph, Vertex, SearchHandler
-from heap import MaxHeap
+from structures.graph import Graph, Vertex, SearchHandler
+from structures.heap import MaxHeap
+
 
 class Infinite(object):
 
