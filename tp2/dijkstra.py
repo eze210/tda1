@@ -22,8 +22,9 @@ class Dijkstra(SearchHandler):
 			self.distances[vertex] = Infinite()
 			self.parents[vertex] = None
 
-	def __call__(self):
 		self.distances[self.initial_vertex] = 0
+		
+	def __call__(self):
 		self.graph.iterate(self.initial_vertex, self)
 		return self.distances
 
@@ -36,7 +37,7 @@ class Dijkstra(SearchHandler):
 		self.parents[adjacent] = vertex
 		
 	def shouldPushAdjacent(self, vertex, adjacent):
-		return self.distances[adjacent] > self.distances[vertex] + self.graph.getEdgeWeight(vertex, adjacent)
+		return self.distances[adjacent] > (self.distances[vertex] + self.graph.getEdgeWeight(vertex, adjacent))
 
 	def getStructure(self):
 		return MaxHeap(self.comparisonBetweenVertices)
