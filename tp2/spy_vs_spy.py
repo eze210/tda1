@@ -1,5 +1,4 @@
 from structures.graph import Graph, Vertex
-from plot import Plotter
 from sys import argv
 from bfs import BFSSearchHandler
 from dijkstra import Dijkstra
