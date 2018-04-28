@@ -32,7 +32,6 @@ class Dijkstra(SearchHandler):
 		return self.distances[vertex]
 
 	def prePushAdjacent(self, vertex, adjacent):
-		super(Dijkstra, self).prePushAdjacent(vertex, adjacent)
 		self.distances[adjacent] = self.distances[vertex] + self.graph.getEdgeWeight(vertex, adjacent)
 		self.parents[adjacent] = vertex
 		

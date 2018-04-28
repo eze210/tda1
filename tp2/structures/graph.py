@@ -31,7 +31,7 @@ class SearchHandler(object):
 		pass
 
 	def onVisit(self, vertex):
-		print("Visit vertex: {}".format(vertex))
+		pass
 
 	def onAdjacent(self, vertex, adjacent):
 		pass

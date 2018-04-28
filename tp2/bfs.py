@@ -28,6 +28,14 @@ class BFSSearchHandler(SearchHandler):
 	def getLevel(self, vertex):
 		return self.levels[vertex]
 
+	def getShortestPath(self, vertex):
+		if vertex not in self.parents:
+			return [vertex]
+
+		path = self.getShortestPath(self.parents[vertex])
+		path.append(vertex)
+		return path
+
 
 if __name__ == '__main__':
 	graph, root = defaultGraph()
