@@ -11,7 +11,7 @@ class Plotter(object):
 	"""docstring for Plotter"""
 	def __init__(self, graph):
 		self.graph = graph
-	
+
 	def plot(self):
 		drawableGraph = nx.DiGraph()
 		drawableGraph.add_nodes_from(self.graph.vertices)
