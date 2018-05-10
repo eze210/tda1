@@ -49,7 +49,7 @@ Por lo tanto, se comprueba que la secuencia de aristas d<sub>i</sub> es un camin
 
 ## Certificación
 
-Dada una secuencia de aristas que componen el máximo ciclo Hamiltoniano en un grafo, se puede observar que para verificar que esto es cierto, es necesario evaluar todos los ciclos posibles, lo cual equivale a resolver el problema. Como se demuestra luego, TSPM es NP-hard, y por lo tanto no puede pertenecer a NP.
+Dada una secuencia de aristas que componen el máximo ciclo Hamiltoniano en un grafo, se puede observar que para verificar que esto es cierto, es necesario evaluar todos los ciclos posibles, lo cual equivale a resolver el problema. Como se demuestró anteriormente, TSPM es NP-hard, y por lo tanto no puede pertenecer a NP.
 
 
 ## Complejidad
