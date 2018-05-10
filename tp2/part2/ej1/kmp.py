@@ -24,19 +24,29 @@ def Z(s):
     return Z
 
 
-def kmp(S, P):
-    """Finds the first repetition of `P` in `S` and returns the index in `S` where it starts
-    or None if it wasn't found."""
+def get_shift_table(P):
+    """Returns the table that handles the shifts of the KMP algorithm."""
 
-    # builds the shiting table
     z = Z(P)
     T2 = [0] * len(P)
     for i in reversed(range(1, len(P))):
         T2[i + z[i] - 1] = z[i]
+
     T = [0] * len(P)
     T[-1] = T2[-1]
     for i in reversed(range(1, len(P) - 1)):
         T[i] = max(T2[i], T[i+1] - 1)
+
+    return T
+
+
+def kmp(S, P, T=None):
+    """Finds the first repetition of `P` in `S` and returns the index in `S` where it starts
+    or None if it wasn't found.
+    Optionally, the table of shifts for the pattern can be passed if already computed."""
+
+    # builds the shiting table
+    T = T or get_shift_table(P)
 
     # begins searching
     s = p = 0
@@ -56,6 +66,7 @@ def kmp(S, P):
 
 
 if __name__ == '__main__':
+    # some unit tests
     assert Z('aabcaabxaaaz') == [12, 1, 0, 0, 3, 1, 0, 0, 2, 2, 1, 0], Z('aabcaabxaaaz')
     assert Z('aaaaa') == [5, 4, 3, 2, 1], Z('aaaaa')
     assert Z('baaaaa') == [6, 0, 0, 0, 0, 0], Z('baaaaa')
