@@ -1,4 +1,4 @@
-# Ejercicio 3
+## Ejercicio 3
 
 Una universidad quiere dictar un conjunto de cursos C1, C2 … Cn donde cada curso se puede dar solo en el intervalo de tiempo Ti, ya que los docentes tienen poca flexibilidad horaria.
 Puede que varios cursos se den a la vez, por ejemplo el curso 1 puede dictarse de 3 a 6 y el curso 2 de 4 a 8.
@@ -6,7 +6,7 @@ Conocemos el horario de inicio y finalización de cada uno de los cursos.
 El objetivo es ver cuál es la menor cantidad de aulas necesarias para acomodar todos los cursos (suponer que todas las aulas son iguales).
 
 
-## Algoritmo propuesto
+### Algoritmo propuesto
 
 El algoritmo consistirá en barrer los arreglos de los horarios ordenados de mayor a menor, desde la última posición hasta la primera. Entonces, la iteración representará un avance en el tiempo, y cada ciclo de la misma representará un intervalo de tiempo.
 Mantendremos el número de cursos que se deben dictar en ese intervalo en una variable (que llamaremos "contador"), de tal manera que podamos guardar su máximo valor en otra variable, que representará la máxima cantidad de cursos que tienen un conflicto de horarios en algún instante.
@@ -43,7 +43,7 @@ while not horariosInicio.vacio():
 ~~~
 
 
-## Reducción a instancia de coloreo
+### Reducción a instancia de coloreo
 
 Declaramos las siguientes clases:
 
@@ -86,7 +86,7 @@ Con esta transformación, resolver el problema de los cursos equivale a resolver
 Dentro del ciclo while, la operación más costosa es la de recorrer el heap de cursos activos y agregar aristas. Esta operación es de orden $O(n)$, y como este heap se recorre N veces (una por cada curso), hacer esta transformación es $O(n^2)$
 
 
-## En base a los puntos anteriores ¿Es P = NP?
+### En base a los puntos anteriores ¿Es P = NP?
 
 No, ¡Sino seríamos millonarios!
 

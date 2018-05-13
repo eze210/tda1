@@ -1,16 +1,16 @@
-# Ejercicio 2
+## Ejercicio 2
 
 El problema propuesto es el del viajante (TSP) en su versión de optimización, pero se busca el camino máximo en lugar del mínimo.
 
 Se sabe que TSP es NP-hard y, de esta forma, se puede intuir que el problema del máximo debe serlo también. Para demostrar esto, basta ver que TSP puede reducirse en tiempo polinómico a este otro problema y, además, éste no pertenece a NP.
 
 
-## TSP
+### TSP
 
 Dado un grafo completo, pesado y no dirigido G(V, E) cuyos pesos son positivos, se busca el ciclo Hamiltoniano en el cual la suma de los pesos de las aristas sea mínima.
 
 
-## Hardness
+### Hardness
 
 Se utilizará un reducción de TSP a TSP Máximo (TSPM) para comprobar la dificultad de TSPM. Esto se realizará mediante una transformación que nos asegure que, cuanto más pesada es una arista, menos pesada sea su transformada.
 
@@ -26,7 +26,7 @@ Para obtener el menor ciclo Hamiltoniano utilizando TSPM, se puede utilizar la s
 </p>
 
 
-## Demostración
+### Demostración
 
 Se quiere comprobar que la solución de la reducción es válida. Es decir, obtener el ciclo máximo en el grafo transformado equivale a obtener el mínimo en el grafo original.
 
@@ -47,12 +47,12 @@ Como al grafo original solamente se le modificaron los pesos, entonces si la sol
 Por lo tanto, se comprueba que la secuencia de aristas d<sub>i</sub> es un camino Hamiltoniano mínimo.
 
 
-## Certificación
+### Certificación
 
 Dada una secuencia de aristas que componen el máximo ciclo Hamiltoniano en un grafo, se puede observar que para verificar que esto es cierto, es necesario evaluar todos los ciclos posibles, lo cual equivale a resolver el problema. Como se demuestró anteriormente, TSPM es NP-hard, y por lo tanto no puede pertenecer a NP.
 
 
-## Complejidad
+### Complejidad
 
 El paso 1 requiere recorrer todas las aristas del grafo, por lo que resulta O(|V| + |E|) si se tiene una representación con listas.
 
