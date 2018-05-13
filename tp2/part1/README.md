@@ -14,7 +14,7 @@ El mapa de la ciudad se modelizará como un grafo dirigido, donde cada vértice 
 
 
 
-## Item 1
+## Paso 1
 
 Dado un mapa de una ciudad, las ubicaciones de los espías y el aeropuerto determine quién se quedará con los informes.
 
@@ -100,7 +100,7 @@ Entonces, como tenemos que aplicar dos algoritmos de orden `O(|V| + |E|)` (llama
 
 
 
-## Item 2
+## Paso 2
 
 Repita el procedimiento pero introduciendo costos en los caminos.
 
@@ -161,4 +161,45 @@ Se puede observar que la manera de iterar el grafo es muy similar en BFS y en Di
 Las operaciones de agregar o quitar elementos de la cola de prioridad son de orden `O(log N)`, con N igual a la cantidad de elementos que contiene la misma.
 Como la cola de prioridad contendrá vértices, y eventualmente podrían entrar todos los vértices menos uno (si el VerticeInicial tuviera grado de salida N-1, por ejemplo), el orden de cada operación sobre la cola de prioridad estará dado por `O(log |V|)` (se reemplaza N por |V|).
 Se observa en el pseudocódigo que se recorrerán todos los nodos y aristas del grafo, entonces el orden de la iteración ignorando el orden de las operaciones sobre la cola de prioridad será, como en BFS, `O(|V| + |E|)`.
-Además, se observa que en cada iteración se puede agregar un elemento a la cola de prioridad, y que dicho elemento será removido antes de terminar el algoritmo. Por lo tanto, el orden del algorimo considerando la iteración del grafo y las operaciones que se hacen en cada paso de la misma, será `O((|V| + |E|) log |V|) `.
+Además, se observa que en cada iteración se puede agregar un elemento a la cola de prioridad, y que dicho elemento será removido antes de terminar el algoritmo. Por lo tanto, el orden del algorimo considerando la iteración del grafo y las operaciones que se hacen en cada paso de la misma, será `O((|V| + |E|) log |V|)`.
+
+
+
+## Paso 3
+
+Analice la complejidad añadida si se solicita retornar el camino realizado por cada espía en los pasos 1 y 2.
+
+
+### Análisis
+
+En ambos casos se tuvo que guardar el "padre" de cada vértice.
+Suponiendo que ya se calcularon los valores mínimos y el diccionario de Padres, el algoritmo para obtener el camino mínimo consiste en partir de un vértice y obtener el padre del mismo, el padre del padre, y continuar así hasta llegar al vértice inicial.
+Una versión recursiva de dicho algoritmo se escribe como:
+
+~~~{.python}
+CaminoMinimo(VérticeInicial, VérticeFinal):
+	Si VérticeInicial == VérticeFinal:
+		return [VérticeInicial]
+
+	Padre = Padres[VérticeFinal]
+	camino = CaminoMinimo(VérticeInicial, Padre):
+	camino.agregar(VérticeFinal)
+	return camino
+~~~
+
+Este algoritmo recorre a lo sumo |V| vértices, y aplica operaciones de orden constante en cada paso. Por lo tanto, el orden que se agrega es `O(|V|)`.
+Por lo tanto:
+ - En el caso del paso 1, como el orden de la iteración BFS era `O(|V| + |E|)`, no se agrega complejidad al calcular el camino mínimo.
+ - En el caso del paso 2, como el orden de la iteración de Dijkstra era `O((|V| + |E|) log |V|)`, tampoco se agrega complejidad al calcular el camino mínimo.
+
+
+
+## Paso 4
+
+Realiza los pasos 1 y 2 nuevamente retornando como salida de ejecución los caminos realizados por cada espía.
+
+
+### Ejecución del código
+
+Para la resolución de este paso, las clases Dijkstra y BreadthFirstSearch tienen un método `getShortestPath()`, que implementa el algoritmo recursivo mostrado en el pseudocódigo del paso 3.
+Se provee un script python `spy_vs_spy.py` que ejecuta los cuatro pasos mostrando en salida estándar los resultados.

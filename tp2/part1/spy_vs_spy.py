@@ -1,20 +1,20 @@
 from structures.graph import Graph, Vertex
 from sys import argv
-from bfs import BFSSearchHandler
+from bfs import BreadthFirstSearch
 from dijkstra import Dijkstra
 
 
 def spyVsSpy(mapGraph=None, airportVertex=None, spy1Vertex=None, spy2Vertex=None):
-    print("Spy 1 arrives in {} steps.".format(mapGraph.iterate(spy1Vertex, BFSSearchHandler()).getLevel(airportVertex)))
-    print("Spy 2 arrives in {} steps.".format(mapGraph.iterate(spy2Vertex, BFSSearchHandler()).getLevel(airportVertex)))
+    print("Spy 1 arrives in {} steps.".format(mapGraph.iterate(spy1Vertex, BreadthFirstSearch()).getLevel(airportVertex)))
+    print("Spy 2 arrives in {} steps.".format(mapGraph.iterate(spy2Vertex, BreadthFirstSearch()).getLevel(airportVertex)))
 
 def spyVsSpyWithDistances(mapGraph=None, airportVertex=None, spy1Vertex=None, spy2Vertex=None):
     print("Spy 1 distance: {}.".format(mapGraph.iterate(spy1Vertex, Dijkstra(mapGraph, spy1Vertex)).getDistance(airportVertex)))
     print("Spy 2 distance: {}.".format(mapGraph.iterate(spy2Vertex, Dijkstra(mapGraph, spy2Vertex)).getDistance(airportVertex)))
 
 def spyVsSpyShortestPath(mapGraph=None, airportVertex=None, spy1Vertex=None, spy2Vertex=None):
-    print("Spy 1 shortest path: {}.".format(mapGraph.iterate(spy1Vertex, BFSSearchHandler()).getShortestPath(airportVertex)))
-    print("Spy 2 shortest path: {}.".format(mapGraph.iterate(spy2Vertex, BFSSearchHandler()).getShortestPath(airportVertex)))
+    print("Spy 1 shortest path: {}.".format(mapGraph.iterate(spy1Vertex, BreadthFirstSearch()).getShortestPath(airportVertex)))
+    print("Spy 2 shortest path: {}.".format(mapGraph.iterate(spy2Vertex, BreadthFirstSearch()).getShortestPath(airportVertex)))
 
 def spyVsSpyShortestPathWithDistances(mapGraph=None, airportVertex=None, spy1Vertex=None, spy2Vertex=None):
     print("Spy 1 shortest path: {}.".format(mapGraph.iterate(spy1Vertex, Dijkstra(mapGraph, spy1Vertex)).getShortestPath(airportVertex)))

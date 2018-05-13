@@ -3,10 +3,10 @@ from structures.queue import Queue
 from collections import defaultdict
 
 
-class BFSSearchHandler(SearchHandler):
+class BreadthFirstSearch(SearchHandler):
 
 	def __init__(self):
-		super(BFSSearchHandler, self).__init__()
+		super(BreadthFirstSearch, self).__init__()
 		self.visited = set()
 		self.parents = defaultdict(None)
 		self.levels = defaultdict(lambda: 0)
@@ -39,4 +39,4 @@ class BFSSearchHandler(SearchHandler):
 
 if __name__ == '__main__':
 	graph, root = defaultGraph()
-	graph.iterate(root, BFSSearchHandler())
+	graph.iterate(root, BreadthFirstSearch())
