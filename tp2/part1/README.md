@@ -203,3 +203,18 @@ Realiza los pasos 1 y 2 nuevamente retornando como salida de ejecución los cami
 
 Para la resolución de este paso, las clases Dijkstra y BreadthFirstSearch tienen un método `getShortestPath()`, que implementa el algoritmo recursivo mostrado en el pseudocódigo del paso 3.
 Se provee un script python `spy_vs_spy.py` que ejecuta los cuatro pasos mostrando en salida estándar los resultados.
+Para ejecutar el script:
+
+~~~{.python}
+ $ python3 spy_vs_spy.py indice_espia_1 indice_espia_2 indice_aeropuerto [dir]
+~~~
+
+- indice_espia_1 Es el indice del vertice del espia 1 en un archivo de nombre mapa.coords
+- indice_espia_2 Es el indice del vertice del espia 2 en un archivo de nombre mapa.coords
+- indice_aeropuerto Es el indice del vertice del aeropuerto en un archivo de nombre mapa.coords
+- directorio Es el directorio en el que se debe buscar el archivo mapa.coords
+
+Para ver esta ayuda por salida estándar, se puede ejecutar también:
+~~~{.python}
+ $ python3 spy_vs_spy.py --help
+~~~

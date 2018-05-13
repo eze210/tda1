@@ -54,27 +54,9 @@ class SearchHandler(object):
 
 class Graph(object):
 
-	def __init__(self, file_name = "", real_distance = False):
+	def __init__(self, real_distance = False):
 		self.vertices = []
 		self.edges = {}
-
-		if file_name:
-			with open(file_name, "r") as file:
-				for line in file:
-					coord = line.split('-')
-					coord1 = coord[0].split()
-					coord2 = coord[1].split()
-
-					vertex1 = Vertex(int(coord1[0]), int(coord1[1]))
-					vertex2 = Vertex(int(coord2[0]), int(coord2[1]))
-
-					self.addVertex(vertex1)
-					self.addVertex(vertex2)
-
-					if (real_distance):
-						self.addEdge(vertex1, vertex2, vertex1.distance(vertex2))
-					else:
-						self.addEdge(vertex1, vertex2, 1)
 
 	def addVertex(self, vertex):
 		if not vertex in self.vertices:
