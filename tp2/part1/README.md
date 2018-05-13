@@ -10,7 +10,7 @@ Dos Agentes secretos intentan hacerse con unos informes clasificados. El espía 
 
 ## Introducción a la Solución
 
-El mapa de la ciudad lo modelizaremos como un grafo dirigido, donde cada vértice representa una posición geográfica del mapa. Cada vértice estará caracterizado por sus coordenadas X e Y. Cada uno de los espías se encontrará inicialmente en algún vértice, y el aeropuerto en otro.
+El mapa de la ciudad se modelizará como un grafo dirigido, donde cada vértice representa una posición geográfica del mapa. Cada vértice estará caracterizado por sus coordenadas X e Y. Cada uno de los espías se encontrará inicialmente en algún vértice, y el aeropuerto en otro.
 
 
 
@@ -21,7 +21,7 @@ Dado un mapa de una ciudad, las ubicaciones de los espías y el aeropuerto deter
 
 ### Algoritmo de alto nivel
 
-Esta parte del ejercicio la resolveremos utilizando una Breadth-first search (BFS) desde cada uno de los vértices de los espías. 
+Esta parte del ejercicio se resolverá utilizando una Breadth-first search (BFS) desde cada uno de los vértices de los espías. 
 
 ~~~{.python}
 G: Digrafo que representa el mapa de la ciudad.
@@ -45,7 +45,7 @@ Else:
 
 ### Breadth First Search
 
-Para este algoritmo utilizamos un recorrido BFS del grafo.
+Para este algoritmo se utiliza un recorrido BFS del grafo.
 Un algoritmo básico para recorrer un gráfico por niveles se puede escribir de la siguiente manera:
 
 ~~~{.python}
@@ -64,7 +64,7 @@ BFS(Grafo, VerticeInicial):
 				Cola.agregar(A)
 ~~~
 
-Observando que los ordenes de cada operación en el algoritmo es de orden constante, y viendo que se deben recorrer todos los nodos y todas las aristas (adyacencias) una vez, se deduce que este algoritmo es de orden O(|V| + |E|). Sin embargo, este algoritmo no alcanza para obtener a cuántos niveles de distancia está cada uno de los otros nodos.
+Observando que los ordenes de cada operación en el algoritmo es de orden constante, y viendo que se deben recorrer todos los nodos y todas las aristas (adyacencias) una vez, se deduce que este algoritmo es de orden `O(|V| + |E|)`. Sin embargo, este algoritmo no alcanza para obtener a cuántos niveles de distancia está cada uno de los otros nodos.
 Para esto, necesitaremos algunas variables extra. Se puede modificar el algoritmo de la siguiente manera:
 
 ~~~{.python}
@@ -96,7 +96,7 @@ En el algoritmo modificado, sólo se agregaron operaciones de orden constante, p
 
 ### Orden del algoritmo de alto nivel
 
-Entonces, como tenemos que aplicar dos algoritmos de orden O(|V| + |E|) (llamamos dos veces a BFS), tendremos un algoritmo final de orden O(|V| + |E|) para resolver el problema propuesto.
+Entonces, como tenemos que aplicar dos algoritmos de orden `O(|V| + |E|)` (llamamos dos veces a BFS), tendremos un algoritmo final de orden `O(|V| + |E|)` para resolver el problema propuesto.
 
 
 
@@ -104,8 +104,8 @@ Entonces, como tenemos que aplicar dos algoritmos de orden O(|V| + |E|) (llamamo
 
 Repita el procedimiento pero introduciendo costos en los caminos.
 
-En este caso, en vez de utilizar un algoritmo que tenga en cuenta los niveles recorridos, utilizaremos uno que calcule las distancias mínimas.
-El algoritmo a utilizar será el de Dijkstra, y también lo utilizaremos desde la posición de cada espía:
+En este caso, en vez de utilizar un algoritmo que tenga en cuenta los niveles recorridos, se utilizará otro que calcule las distancias mínimas.
+El algoritmo a utilizar será el de Dijkstra, y también se utilizará desde la posición de cada espía:
 
 ~~~{.python}
 G: Digrafo pesado que representa el mapa de la ciudad.
@@ -153,10 +153,12 @@ Dijkstra(Grafo, VerticeInicial):
 				Heap.agregar(A)
 ~~~
 
-Se puede observar que la manera de iterar el grafo es muy similar en BFS y en Dijkstra (y también en DFS, aunque no hace falta para el ejercicio). En el código fuente se implementó una iteración genérica del grafo, y lo que hacen los algoritmos es manejar qué hacer en cada sección de la iteración.
+Se puede observar que la manera de iterar el grafo es muy similar en BFS y en Dijkstra (y también en DFS, aunque no hace falta para el ejercicio). En el código fuente se implementó una iteración genérica del grafo, y la función de los algoritmos es definir qué hacer en cada sección de la iteración.
 
 
 ### Orden algorítmico
 
-O((|V| + |E|) log |V|)
-Explicar..
+Las operaciones de agregar o quitar elementos de la cola de prioridad son de orden `O(log N)`, con N igual a la cantidad de elementos que contiene la misma.
+Como la cola de prioridad contendrá vértices, y eventualmente podrían entrar todos los vértices menos uno (si el VerticeInicial tuviera grado de salida N-1, por ejemplo), el orden de cada operación sobre la cola de prioridad estará dado por `O(log |V|)` (se reemplaza N por |V|).
+Se observa en el pseudocódigo que se recorrerán todos los nodos y aristas del grafo, entonces el orden de la iteración ignorando el orden de las operaciones sobre la cola de prioridad será, como en BFS, `O(|V| + |E|)`.
+Además, se observa que en cada iteración se puede agregar un elemento a la cola de prioridad, y que dicho elemento será removido antes de terminar el algoritmo. Por lo tanto, el orden del algorimo considerando la iteración del grafo y las operaciones que se hacen en cada paso de la misma, será `O((|V| + |E|) log |V|) `.
