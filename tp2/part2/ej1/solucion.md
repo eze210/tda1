@@ -29,9 +29,9 @@ Es una reducción porque el problema que se quiere resolver es la verificación 
 
 ### Solución utilizando una única ejecución de KMP
 
-Sea S3=S2+S2, es decir la concatencación de S2 consigo misma, se puede demostrar que de ser S2 un rotación de S1, entonces S1 será una sub-cadena de S3.
+Sea S3=S2+S2, es decir la concatencación de S2 consigo misma, se puede demostrar que de ser S2 una rotación de S1, entonces S1 será una sub-cadena de S3.
 
-Luego basta con utilizar KMP para buscar a S1 dentro de S3. De ser así, podemos afirmar que S2 es efectivamente una rotación de S1. De lo contrario, no lo es.
+Primero debemos chequear que los largos de S1 y S2 coincidan, y luego basta con utilizar KMP para buscar a S1 dentro de S3. De ser así, podemos afirmar que S2 es efectivamente una rotación de S1. De lo contrario, no lo es.
 
 ## Demostración
 
