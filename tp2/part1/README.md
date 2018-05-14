@@ -50,15 +50,18 @@ Un algoritmo básico para recorrer un gráfico por niveles se puede escribir de 
 
 ~~~{.python}
 BFS(Grafo, VerticeInicial):
-	Cola: estructura con invariante FIFO, con orden algorítmico constante para agregar y remover elementos.
-	Visitados: estructura con orden algorítmico constante para agregar elementos o preguntar si están.
+	Cola: estructura con invariante FIFO, con orden algorítmico
+		constante para agregar y remover elementos.
+	Visitados: estructura con orden algorítmico constante para
+		agregar elementos o preguntar si están.
 
 	Cola.agregar(VerticeInicial)
 	While Cola no está vacía:
 		V = Cola.remover()
 		Visitados.agregar(V)
 
-		# Si el grafo está representado como lista de adyacencias, obtener las adyacencias es de orden constante.
+		# Si el grafo está representado como lista de adyacencias,
+		# obtener las adyacencias es de orden constante.
 		Foreach A in adyacentes de V:
 			If A not in Visitados:
 				Cola.agregar(A)
@@ -69,10 +72,14 @@ Para esto, necesitaremos algunas variables extra. Se puede modificar el algoritm
 
 ~~~{.python}
 BFS(Grafo, VerticeInicial):
-	Cola: estructura con invariante FIFO, con orden algorítmico constante para agregar y remover elementos.
-	Visitados: estructura con orden algorítmico constante para agregar elementos o preguntar si están.
-	Padres: estructura de acceso aleatorio que dice cuál es el "padre" de cada vértice
-	Niveles: estructura de acceso aleatorio que dice cuál es el "nivel" de cada vértice
+	Cola: estructura con invariante FIFO, con orden algorítmico
+		constante para agregar y remover elementos.
+	Visitados: estructura con orden algorítmico constante para agregar
+		elementos o preguntar si están.
+	Padres: estructura de acceso aleatorio que dice cuál es el "padre"
+		de cada vértice
+	Niveles: estructura de acceso aleatorio que dice cuál es el "nivel"
+		de cada vértice
 
 	Padres[VerticeInicial] = nil
 	Niveles[VerticeInicial] = 0
@@ -82,7 +89,8 @@ BFS(Grafo, VerticeInicial):
 		V = Cola.remover()
 		Visitados.agregar(V)
 
-		# Si el grafo está representado como lista de adyacencias, obtener las adyacencias es de orden constante.
+		# Si el grafo está representado como lista de adyacencias, obtener
+		# las adyacencias es de orden constante.
 		Foreach A in adyacentes de V:
 			If A not in Visitados:
 				If A not in Padres:
@@ -133,9 +141,11 @@ Como en el ítem anterior, se plantea una versión del algoritmo de Dijkstra que
 
 ~~~{.python}
 Dijkstra(Grafo, VerticeInicial):
-	Heap: cola de prioridad, con orden algorítmico O(logN) para agregar y remover el mínimo elemento.
+	Heap: cola de prioridad, con orden algorítmico O(logN) para agregar
+		y remover el mínimo elemento.
 	Distancias: Distancia a cada uno de los vértices.
-	Padres: estructura de acceso aleatorio que dice cuál es el "padre" de cada vértice
+	Padres: estructura de acceso aleatorio que dice cuál es el "padre"
+		de cada vértice
 
 	Distancias[TodosLosVertices] = Infinito
 
@@ -206,7 +216,10 @@ Se provee un script python `spy_vs_spy.py` que ejecuta los cuatro pasos mostrand
 Para ejecutar el script:
 
 ~~~{.python}
- $ python3 spy_vs_spy.py indice_espia_1 indice_espia_2 indice_aeropuerto [dir]
+ $ python3 spy_vs_spy.py indice_espia_1 \
+ 						 indice_espia_2 \
+ 						 indice_aeropuerto \
+ 						 [dir]
 ~~~
 
 - indice_espia_1 Es el indice del vertice del espia 1 en un archivo de nombre mapa.coords
@@ -217,4 +230,5 @@ Para ejecutar el script:
 Para ver esta ayuda por salida estándar, se puede ejecutar también:
 ~~~{.python}
  $ python3 spy_vs_spy.py --help
+
 ~~~
