@@ -33,7 +33,104 @@ Sea S3=S2+S2, es decir la concatencación de S2 consigo misma, se puede demostra
 
 Luego basta con utilizar KMP para buscar a S1 dentro de S3. De ser así, podemos afirmar que S2 es efectivamente una rotación de S1. De lo contrario, no lo es.
 
-
-#### Demostración
+## Demostración
 
 **TODO:** demonstrar lo anterior
+
+### Demostración de fuerza bruta
+
+Sean S1 y S2 dos cadenas de largo *n*.
+
+~~~{.python}
+sonIguales(s1, s2):
+    for i in range(0,len(s1)):
+        if s1[i] != s2 :
+            return false
+    # no hubo diferencias
+    return true
+~~~
+
+`sonIguales` es una operación de orden $\mathcal{O}(n)$, ya que 
+
+#### Orden de la rotación
+
+Verificar que una cadena sea rotación de la otra consiste en verificar que ambas cadenas sean iguales, y en caso contrario, rotar una de las cadenas de a un caracter, y reintentar hasta encontrar match o hasta haber hecho *n* rotaciones.
+
+~~~{.python}
+esRotacion(s1, s2):
+    for i in range(0,len(s1)):
+        if sonIguales(s1, s2) :
+            return true
+        rotar(s2)
+    # no hubo match
+    return false
+~~~
+
+`rotar(cadena)` es una función que traslada un caracter desde el comienzo de la cadena al final de la misma. Si se utiliza un buffer cíclico, la operación es $\mathcal{O}(1)$
+
+### Demostración de KMP
+
+#### Algoritmo Z para preprocesamiento de prefijos
+
+El *algoritmo Z* es la base de varios algoritmos de string matching, incluyendo a *KMP*
+
+Dado un string S, el algoritmo Z genera un array con las longitudes de los prefijos que comienzan en S[i]. Sea Z[] el array resultado de aplicar el algoritmo al string S, Z[i] nos indica la *longitud máxima* del prefijo de S que coincide con un substring que *comienza en S[i]*
+
+El algoritmo Z se comporta de la siguiente forma:
+
+Armo un intervalo [L, R], buscando maximizar R, tal que S[L,R] es un prefijo de S
+Inicializo el intervalo en 0,0
+
+~~~{.python}
+for i in range (0, range(S)):
+    if (i > R):
+        # i está fuera de [L,R]
+        L = i
+        R = BusquedaNaive()
+        Z[i] = R - L + 1
+    else :
+        # i está en una ventana
+        # K pertenece al prefijo correspondiente a la ventana
+        K = i-L
+        # Si Z[k] es más chico que el intervalo remanente de la ventana
+        # entonces no hay más matching
+        if (Z[k] < R-i+1):
+            Z[i] = Z[k]
+        else:
+            # Expando la ventana hasta terminar el matching
+            L = i
+            R = BusquedaNaive()
+            Z[i] = R - L + 1
+~~~
+
+El algoritmo Z es $\mathcal{O}(n)$, ya que *i* recorre linealmente el string al igual que el puntero R.
+
+#### Tabla de saltos
+
+Para optimizar la búsqueda, el algoritmo KMP utiliza una tabla de saltos (Shift table). Esta tabla se construye apartir del array Z precalculado. Se recorre dos veces la tabla en orden inverso, por lo que la construcción de la tabla sigue siendo $\mathcal{O}(n)$
+
+TODO: pseudocódigo de como armar la tabla, ¡Axel soy muy duro!
+
+#### Orden de KMP
+
+Una vez calculada la tabla de saltos, se puede realizar una búsqueda lineal sobre S.
+
+~~~
+    # s: posicion en texto S, p: posicion en pattern P
+    s = p = 0
+    while s < len(S) - len(P) + p + 1:
+        # Similar a la búsqueda naive
+        while p < len(P) and S[s] == P[p]:
+            s += 1
+            p += 1
+        if p == len(P):
+            return s - len(P)
+        elif p == 0:
+            s += 1
+        else:
+            # Utilizo la tabla de saltos para evitar búsquedas innecesarias
+            p = T[p-1]
+
+    # no match found
+    return None
+~~~
