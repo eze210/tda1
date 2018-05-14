@@ -61,4 +61,4 @@ El paso 3 corresponde a la reducción.
 
 El paso 4 no requiere ningún cambio, ya que la correspondencia entre aristas y nodos en la transformación es 1 a 1. Es decir que la lista de aristas que conforman una solución de TSPM conforman la solución de TSP.
 
-Como puede observarse, la reducción se llevó a cabo en tiempo polinómico. Al poder resolver TSP utilizando TSPM, se puede afirmar que TSP ≤<sub>p</sub> TSPM y, como TSP es NP-hard, TSPM también lo es.
+Como puede observarse, la reducción se llevó a cabo en tiempo polinómico. Al poder resolver TSP utilizando TSPM, se puede afirmar que $\mathrm{TSP} \leq \mathrm{_{p}TSPM}$ y, como TSP es NP-hard, TSPM también lo es.

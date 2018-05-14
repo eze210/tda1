@@ -67,7 +67,8 @@ BFS(Grafo, VerticeInicial):
 				Cola.agregar(A)
 ~~~
 
-Observando que los ordenes de cada operación en el algoritmo es de orden constante, y viendo que se deben recorrer todos los nodos y todas las aristas (adyacencias) una vez, se deduce que este algoritmo es de orden `O(|V| + |E|)`. Sin embargo, este algoritmo no alcanza para obtener a cuántos niveles de distancia está cada uno de los otros nodos.
+Observando que los ordenes de cada operación en el algoritmo es de orden constante, y viendo que se deben recorrer todos los nodos y todas las aristas (adyacencias) una vez, se deduce que este algoritmo es de orden $O(|V| + |E|)$. Sin embargo, este algoritmo no alcanza para obtener a cuántos niveles de distancia está cada uno de los otros nodos.
+
 Para esto, necesitaremos algunas variables extra. Se puede modificar el algoritmo de la siguiente manera:
 
 ~~~{.python}
@@ -104,7 +105,7 @@ En el algoritmo modificado, sólo se agregaron operaciones de orden constante, p
 
 ### Orden del algoritmo de alto nivel
 
-Entonces, como tenemos que aplicar dos algoritmos de orden `O(|V| + |E|)` (llamamos dos veces a BFS), tendremos un algoritmo final de orden `O(|V| + |E|)` para resolver el problema propuesto.
+Entonces, como tenemos que aplicar dos algoritmos de orden $O(|V| + |E|)$ (llamamos dos veces a BFS), tendremos un algoritmo final de orden $O(|V| + |E|)$ para resolver el problema propuesto.
 
 
 
@@ -113,6 +114,7 @@ Entonces, como tenemos que aplicar dos algoritmos de orden `O(|V| + |E|)` (llama
 Repita el procedimiento pero introduciendo costos en los caminos.
 
 En este caso, en vez de utilizar un algoritmo que tenga en cuenta los niveles recorridos, se utilizará otro que calcule las distancias mínimas.
+
 El algoritmo a utilizar será el de Dijkstra, y también se utilizará desde la posición de cada espía:
 
 ~~~{.python}
@@ -168,10 +170,13 @@ Se puede observar que la manera de iterar el grafo es muy similar en BFS y en Di
 
 ### Orden algorítmico
 
-Las operaciones de agregar o quitar elementos de la cola de prioridad son de orden `O(log N)`, con N igual a la cantidad de elementos que contiene la misma.
-Como la cola de prioridad contendrá vértices, y eventualmente podrían entrar todos los vértices menos uno (si el VerticeInicial tuviera grado de salida N-1, por ejemplo), el orden de cada operación sobre la cola de prioridad estará dado por `O(log |V|)` (se reemplaza N por |V|).
-Se observa en el pseudocódigo que se recorrerán todos los nodos y aristas del grafo, entonces el orden de la iteración ignorando el orden de las operaciones sobre la cola de prioridad será, como en BFS, `O(|V| + |E|)`.
-Además, se observa que en cada iteración se puede agregar un elemento a la cola de prioridad, y que dicho elemento será removido antes de terminar el algoritmo. Por lo tanto, el orden del algorimo considerando la iteración del grafo y las operaciones que se hacen en cada paso de la misma, será `O((|V| + |E|) log |V|)`.
+Las operaciones de agregar o quitar elementos de la cola de prioridad son de orden $O(log N)$, con N igual a la cantidad de elementos que contiene la misma.
+
+Como la cola de prioridad contendrá vértices, y eventualmente podrían entrar todos los vértices menos uno (si el VerticeInicial tuviera grado de salida N-1, por ejemplo), el orden de cada operación sobre la cola de prioridad estará dado por $O(log |V|)$ (se reemplaza N por |V|).
+
+Se observa en el pseudocódigo que se recorrerán todos los nodos y aristas del grafo, entonces el orden de la iteración ignorando el orden de las operaciones sobre la cola de prioridad será, como en BFS, $O(|V| + |E|)$.
+
+Además, se observa que en cada iteración se puede agregar un elemento a la cola de prioridad, y que dicho elemento será removido antes de terminar el algoritmo. Por lo tanto, el orden del algorimo considerando la iteración del grafo y las operaciones que se hacen en cada paso de la misma, será $O((|V| + |E|) log |V|)$.
 
 
 
@@ -197,10 +202,10 @@ CaminoMinimo(VérticeInicial, VérticeFinal):
 	return camino
 ~~~
 
-Este algoritmo recorre a lo sumo |V| vértices, y aplica operaciones de orden constante en cada paso. Por lo tanto, el orden que se agrega es `O(|V|)`.
+Este algoritmo recorre a lo sumo |V| vértices, y aplica operaciones de orden constante en cada paso. Por lo tanto, el orden que se agrega es $O(|V|)$.
 Por lo tanto:
- - En el caso del paso 1, como el orden de la iteración BFS era `O(|V| + |E|)`, no se agrega complejidad al calcular el camino mínimo.
- - En el caso del paso 2, como el orden de la iteración de Dijkstra era `O((|V| + |E|) log |V|)`, tampoco se agrega complejidad al calcular el camino mínimo.
+ - En el caso del paso 1, como el orden de la iteración BFS era $O(|V| + |E|)$, no se agrega complejidad al calcular el camino mínimo.
+ - En el caso del paso 2, como el orden de la iteración de Dijkstra era $O((|V| + |E|) log |V|)$, tampoco se agrega complejidad al calcular el camino mínimo.
 
 
 
@@ -212,6 +217,7 @@ Realiza los pasos 1 y 2 nuevamente retornando como salida de ejecución los cami
 ### Ejecución del código
 
 Para la resolución de este paso, las clases Dijkstra y BreadthFirstSearch tienen un método `getShortestPath()`, que implementa el algoritmo recursivo mostrado en el pseudocódigo del paso 3.
+
 Se provee un script python `spy_vs_spy.py` que ejecuta los cuatro pasos mostrando en salida estándar los resultados.
 Para ejecutar el script:
 

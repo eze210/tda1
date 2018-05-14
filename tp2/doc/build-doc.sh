@@ -7,7 +7,7 @@ wget https://raw.githubusercontent.com/eze210/tda1/master/tp2/part2/ej2/img/eq2.
 wget https://raw.githubusercontent.com/eze210/tda1/master/tp2/part2/ej2/img/eq3.png -O img/eq3.png
 wget https://raw.githubusercontent.com/eze210/tda1/master/tp2/part2/ej2/img/reduccion-transparente.png -O img/reduccion-transparente.png
 
-pandoc "$cur_dir/../part1/README.md" \
+pandoc -V geometry:margin=1.25in "$cur_dir/../part1/README.md" \
        "$cur_dir/../part2/ej1/solucion.md" \
        "$cur_dir/../part2/ej2/solution.md" \
        "$cur_dir/../part2/ej3/solution.md" \

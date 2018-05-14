@@ -1,16 +1,21 @@
 ## Ejercicio 3
 
 Una universidad quiere dictar un conjunto de cursos C1, C2 … Cn donde cada curso se puede dar solo en el intervalo de tiempo Ti, ya que los docentes tienen poca flexibilidad horaria.
+
 Puede que varios cursos se den a la vez, por ejemplo el curso 1 puede dictarse de 3 a 6 y el curso 2 de 4 a 8.
 Conocemos el horario de inicio y finalización de cada uno de los cursos.
+
 El objetivo es ver cuál es la menor cantidad de aulas necesarias para acomodar todos los cursos (suponer que todas las aulas son iguales).
 
 
 ### Algoritmo propuesto
 
 El algoritmo consistirá en barrer los arreglos de los horarios ordenados de mayor a menor, desde la última posición hasta la primera. Entonces, la iteración representará un avance en el tiempo, y cada ciclo de la misma representará un intervalo de tiempo.
+
 Mantendremos el número de cursos que se deben dictar en ese intervalo en una variable (que llamaremos "contador"), de tal manera que podamos guardar su máximo valor en otra variable, que representará la máxima cantidad de cursos que tienen un conflicto de horarios en algún instante.
+
 Como vamos a iterar sobre dos arreglos ordenados, eliminando en O(1) algún elemento de alguno de los arreglos en cada ciclo, la parte del algoritmo que consiste en la iteración tendrá orden lineal (O(N)).
+
 Además, vamos a necesitar tener los arreglos de horarios ordenados, por lo que nuestro algoritmo necesitaría un preprocesamiento de orden O(N log(N)).
 Por lo tanto, el algoritmo completo, considerando el preprocesamiento y la iteración, será de orden O(N log(N)).
 
@@ -47,22 +52,22 @@ while not horariosInicio.vacio():
 
 Declaramos las siguientes clases:
 
-**Grafo**: representa un grafo compuesto por vértices y aristas. Posee las siguientes operaciones:
+* **Grafo**: representa un grafo compuesto por vértices y aristas. Posee las siguientes operaciones:
 
-    *Grafo()*: Crea una instancia vacía de un grafo no dirigido.
+    * *Grafo()*: Crea una instancia vacía de un grafo no dirigido.
 
-    *agregarVertice(curso)*: Agrega un curso como vértice del grafo.
+    * *agregarVertice(curso)*: Agrega un curso como vértice del grafo.
 
-    *agregarArista(cursoA, cursoB)*: Agrega una arista que une un par de vértices.
+    * *agregarArista(cursoA, cursoB)*: Agrega una arista que une un par de vértices.
 
-**HeapPorHoraFin**: Representa un heap de minimos, con las siguientes operaciones:
+* **HeapPorHoraFin**: Representa un heap de minimos, con las siguientes operaciones:
 
-    *HeapPorHoraFin()*: Crea una instancia vacía del heap de mínimos. Este heap almacena cursos y los ordena según su horario de finalización.
+    * *HeapPorHoraFin()*: Crea una instancia vacía del heap de mínimos. Este heap almacena cursos y los ordena según su horario de finalización.
 
-    *limpiarFinalizados(horario)*: Recibe un horario por parámetro, y elimina del heap los cursos con horario de finalización menores a este horario.
+    * *limpiarFinalizados(horario)*: Recibe un horario por parámetro, y elimina del heap los cursos con horario de finalización menores a este horario.
     Es como aplicar *pop()* recursivamente mientras el horario por parámetro sea mayor que el tope del heap.
 
-    *agregar(curso)*: agrega un curso al heap.
+    * *agregar(curso)*: agrega un curso al heap.
 
 ~~~{.python}
 grafo = new Grafo()
