@@ -58,16 +58,16 @@ S2 = AAAAA
 
 donde se realizan 4 rotaciones de S2, las cuales realizan 5 comparaciones (hasta fallar en la B).
 
-Esto permite demostrar que el algoritmo es O(n<sup>2</sup>).
+Esto permite demostrar que el algoritmo es $\mathcal{O}(n^{2})$.
 
 
 ### Solución por fuerza bruta utilizando KMP
 
 Este algoritmo es una versión modificada del anterior, donde en lugar de realizar una comparación caracter a caracter para cada rotación, se utiliza el algoritmo KMP.
 
-Se conoce que KMP es O(n+m) donde *n* es el largo de la cadena de búsqueda y *m* el largo del patrón a buscar.
+Se conoce que KMP es $\mathcal{O}(n+m)$ donde *n* es el largo de la cadena de búsqueda y *m* el largo del patrón a buscar.
 
-Como en este caso *n=m*, KMP es O(n) en cada rotación y, por lo tanto, el algoritmo final tiene complejidad cuadrática O(n<sup>2</sup>). Lo único que se cambia es un algoritmo lineal de comparación por otro del mismo orden.
+Como en este caso *n=m*, KMP es $\mathcal{O}(n)$ en cada rotación y, por lo tanto, el algoritmo final tiene complejidad cuadrática O(n<sup>2</sup>). Lo único que se cambia es un algoritmo lineal de comparación por otro del mismo orden.
 
 Es una reducción porque el problema que se quiere resolver es la verificación de que una cadena es una rotación de otra, y para esto se utiliza un algortimo de string matching. La transformación de los datos de entrada consiste en las rotaciones que se realizan.
 
@@ -82,8 +82,8 @@ En este caso, el algoritmo propuesto es una reducción porque transformamos una 
 Esta reducción será lineal en el largo de las cadenas porque requerirá copiar una de ellas.
 
 Entonces este algoritmo tendrá:
- - La concatenación, de orden O(|S2|),
- - La delegación en KMP, de orden lineal en la suma de los largos de los strings que toma como entrada KMP: O(|S1| + |S3|) = O(3 |S1|) = O(|S1|)
+ - La concatenación, de orden $\mathcal{O}(|S2|)$,
+ - La delegación en KMP, de orden lineal en la suma de los largos de los strings que toma como entrada KMP: $\mathcal{O}(|S1| + |S3|)$ = $\mathcal{O}(3 |S1|)$ = O$\mathcal{O}(|S1|)$
 
  A continuación analizaremos la complejidad del algoritmo de KMP.
 
