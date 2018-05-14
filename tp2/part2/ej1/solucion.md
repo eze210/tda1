@@ -7,37 +7,15 @@ Dadas dos cadenas de texto S1 y S2 de longitud *n*, se desea determinar si la se
 
 ### Solución por fuerza bruta
 
-Este algoritmo consiste en realizar una comparación caracter a carater para cada rotación de S2. Si S2 es una cadena de largo *n*, entonces son necesarias hasta *n* rotaciones. En el peor de los casos, se deberán realizar *n* comparaciones entre caracteres por cada rotación, como se muestra en el siguiente ejemplo:
-
-S1 = AAAAB\
-S2 = AAAAA
-
-donde se realizan 4 rotaciones de S2, las cuales realizan 5 comparaciones (hasta fallar en la B).
-
-Esto permite demostrar que el algoritmo es O(n<sup>2</sup>).
+Este algoritmo consiste en realizar una comparación caracter a carater para cada rotación de S2. Si S2 es una cadena de largo *n*, entonces son necesarias hasta *n* rotaciones, y cada una de las rotaciones puede tener hasta *n* comparaciones.
 
 
-### Solución por fuerza bruta utilizando KMP
+#### Orden algoritmico
 
-Este algoritmo es una versión modificada del anterior, donde en lugar de realizar una comparación byte a byte para cada rotación, se utiliza el algoritmo KMP.
-
-Se conoce que KMP es O(n+m) donde *n* es el largo de la cadena de búsqueda y *m* el largo del patrón a buscar.
-Como en este caso *n=m* KMP es O(n) en cada rotación y, por lo tanto, el algoritmo resulta en O(n<sup>2</sup>).
-
-Es una reducción porque el problema que se quiere resolver es la verificación de que una cadena es una rotación de otra, y para esto se utiliza un algortimo de string matching. La transformación de los datos de entrada consiste en las rotaciones que se realizan.
+A continuación veremos un análisis de complejidad paso por paso.
 
 
-### Solución utilizando una única ejecución de KMP
-
-Sea S3=S2+S2, es decir la concatencación de S2 consigo misma, se puede demostrar que de ser S2 una rotación de S1, entonces S1 será una sub-cadena de S3.
-
-Primero debemos chequear que los largos de S1 y S2 coincidan, y luego basta con utilizar KMP para buscar a S1 dentro de S3. De ser así, podemos afirmar que S2 es efectivamente una rotación de S1. De lo contrario, no lo es.
-
-## Demostración
-
-**TODO:** demonstrar lo anterior
-
-### Demostración de fuerza bruta
+#### Orden de la comparación
 
 Sean S1 y S2 dos cadenas de largo *n*.
 
@@ -50,25 +28,65 @@ sonIguales(s1, s2):
     return true
 ~~~
 
-`sonIguales` es una operación de orden $\mathcal{O}(n)$, ya que 
+`sonIguales` es una operación de orden $\mathcal{O}(n)$, ya que se recorre la cadena s1 en un bucle haciendo una comparación por cada ciclo.
+
 
 #### Orden de la rotación
+
+`rotar(cadena)` es una función que traslada un caracter desde el comienzo de la cadena al final de la misma. Si se utiliza un buffer cíclico, la operación es $\mathcal{O}(1)$
+
+
+#### Orden del algoritmo
 
 Verificar que una cadena sea rotación de la otra consiste en verificar que ambas cadenas sean iguales, y en caso contrario, rotar una de las cadenas de a un caracter, y reintentar hasta encontrar match o hasta haber hecho *n* rotaciones.
 
 ~~~{.python}
 esRotacion(s1, s2):
-    for i in range(0,len(s1)):
+    for i in range(0, len(s1)):
         if sonIguales(s1, s2) :
             return true
         rotar(s2)
+
     # no hubo match
     return false
 ~~~
 
-`rotar(cadena)` es una función que traslada un caracter desde el comienzo de la cadena al final de la misma. Si se utiliza un buffer cíclico, la operación es $\mathcal{O}(1)$
+En el peor de los casos, se deberán realizar *n* comparaciones entre caracteres por cada rotación, como se muestra en el siguiente ejemplo:
 
-### Demostración de KMP
+S1 = AAAAB\
+S2 = AAAAA
+
+donde se realizan 4 rotaciones de S2, las cuales realizan 5 comparaciones (hasta fallar en la B).
+
+Esto permite demostrar que el algoritmo es O(n<sup>2</sup>).
+
+
+### Solución por fuerza bruta utilizando KMP
+
+Este algoritmo es una versión modificada del anterior, donde en lugar de realizar una comparación caracter a caracter para cada rotación, se utiliza el algoritmo KMP.
+
+Se conoce que KMP es O(n+m) donde *n* es el largo de la cadena de búsqueda y *m* el largo del patrón a buscar.
+
+Como en este caso *n=m*, KMP es O(n) en cada rotación y, por lo tanto, el algoritmo final tiene complejidad cuadrática O(n<sup>2</sup>). Lo único que se cambia es un algoritmo lineal de comparación por otro del mismo orden.
+
+Es una reducción porque el problema que se quiere resolver es la verificación de que una cadena es una rotación de otra, y para esto se utiliza un algortimo de string matching. La transformación de los datos de entrada consiste en las rotaciones que se realizan.
+
+
+### Solución utilizando una única ejecución de KMP
+
+Sea S3 = S2+S2, es decir la concatencación de S2 consigo misma. Se puede demostrar que de ser S2 una rotación de S1, entonces S1 será una sub-cadena de S3.
+
+Primero debemos chequear que los largos de S1 y S2 coincidan, y luego basta con utilizar KMP para buscar a S1 dentro de S3. De ser así, podemos afirmar que S2 es efectivamente una rotación de S1. De lo contrario, no lo es.
+
+En este caso, el algoritmo propuesto es una reducción porque transformamos una de las cadenas (S2) en una copia de la cadena concatenada consigo misma (S3 = S2+S2), y luego llamamos a KMP con la nueva cadena junto con la otra cadena original como parámetros.
+Esta reducción será lineal en el largo de las cadenas porque requerirá copiar una de ellas.
+
+Entonces este algoritmo tendrá:
+ - La concatenación, de orden O(|S2|),
+ - La delegación en KMP, de orden lineal en la suma de los largos de los strings que toma como entrada KMP: O(|S1| + |S3|) = O(3 |S1|) = O(|S1|)
+
+ A continuación analizaremos la complejidad del algoritmo de KMP.
+
 
 #### Algoritmo Z para preprocesamiento de prefijos
 
@@ -111,7 +129,8 @@ Para optimizar la búsqueda, el algoritmo KMP utiliza una tabla de saltos (Shift
 
 TODO: pseudocódigo de como armar la tabla, ¡Axel soy muy duro!
 
-#### Orden de KMP
+
+#### Orden algorítmico
 
 Una vez calculada la tabla de saltos, se puede realizar una búsqueda lineal sobre S.
 
@@ -134,3 +153,5 @@ Una vez calculada la tabla de saltos, se puede realizar una búsqueda lineal sob
     # no match found
     return None
 ~~~
+
+TODO: Por qué esto es lineal? A simple vista tiene un bucle adentro de otro.
