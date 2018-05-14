@@ -21,24 +21,23 @@ Para obtener el menor ciclo Hamiltoniano utilizando TSPM, se puede utilizar la s
  3. Se busca el ciclo Hamiltoniano máximo en el nuevo grafo (TSPM).
  4. El camino corresponde al mínimo en el grafo original.
 
-<p align="center">
-    <img src="img/reduccion-transparente.png" />
-</p>
+
+![](img/reduccion-transparente.png)
 
 
 ### Demostración
 
 Se quiere comprobar que la solución de la reducción es válida. Es decir, obtener el ciclo máximo en el grafo transformado equivale a obtener el mínimo en el grafo original.
 
-Sea d<sub>i</sub> > 0 el peso de la i-ésima arista en el grafo original y d'<sub>i</sub>=d<sub>m</sub> - d<sub>i</sub> + 1 el peso de la misma arista en la solución de TSPM, el recorrido total es:
-
+Sea d<sub>i</sub> > 0 el peso de la i-ésima arista en el grafo original y d'<sub>i</sub>=d<sub>m</sub> - d<sub>i</sub> + 1 el peso de la misma arista en la solución de TSPM, el recorrido total es: \newline
 ![](img/eq1.png)
 
-
+Aplicando la propiedad asociativa de la suma: \newline
 ![](img/eq2.png)
 
-
+Agrupando la primer sumatoria: \newline
 ![](img/eq3.png)
+
 
 Se puede ver que el máximo se alcanza cuando la sumatoria de d<sub>i</sub> es mínima, ya que *k* es un número siempre positivo.
 
