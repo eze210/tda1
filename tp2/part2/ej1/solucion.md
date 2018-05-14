@@ -127,12 +127,30 @@ El algoritmo Z es $\mathcal{O}(n)$, ya que *i* recorre linealmente el string al 
 
 Para optimizar la búsqueda, el algoritmo KMP utiliza una tabla de saltos (Shift table). Esta tabla se construye apartir del array Z precalculado. Se recorre dos veces la tabla en orden inverso, por lo que la construcción de la tabla sigue siendo $\mathcal{O}(n)$
 
-TODO: pseudocódigo de como armar la tabla, ¡Axel soy muy duro!
+~~~{.python}
+	# z: copia del array Z precalculado.
+	# T2: tabla auxiliar, inicializada con todos ceros.
+	# T: tabla de saltos, inicializada con todos ceros.
+
+	#itero en orden inverso de len(P-1) a 1.
+	for i in range(len(P)-1, 0, -1):
+		#para cada posición, guardo el tamaño del prefijo que termina allí.
+		T2[i + z[i] - 1] = z[i] 
+
+	T[len(T)-1] = T2[len(T2)-1]
+
+	#itero en orden inverso de len(P-2) a 1
+	for i in range(len(P)-2, 0, -1):
+		#Guardo en T el mejor shift entre el largo de z[i] (calculado en T2)
+		#o el prefijo que calculé en la tabla anterior - 1 (le resto una letra
+		#ya que me moví un espacio).
+		T[i] = max(T2[i], T[i+1] - 1)
+~~~
 
 
 #### Orden algorítmico
 
-Una vez calculada la tabla de saltos, se puede realizar una búsqueda lineal sobre S.
+Una vez calculada la tabla de saltos, se puede realizar una búsqueda sobre S.
 
 ~~~
     # s: posicion en texto S, p: posicion en pattern P
@@ -154,4 +172,5 @@ Una vez calculada la tabla de saltos, se puede realizar una búsqueda lineal sob
     return None
 ~~~
 
-TODO: Por qué esto es lineal? A simple vista tiene un bucle adentro de otro.
+La búsqueda resulta $\mathcal{O}(n*p)$, siendo n el tamaño del texto (len(S)) y p el tamaño del
+patrón (len(P)). Si consideramos que p es mucho menor que n, el orden resulta $\mathcal{O}(n)$, esto no se cumple cuando el patrón a buscar es muy grande respecto al texto.
