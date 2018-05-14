@@ -91,4 +91,4 @@ Dentro del ciclo while, la operación más costosa es la de recorrer el heap de 
 No, ¡Sino seríamos millonarios!
 
 Al reducir el problema de las aulas en el de coloreo de grafos, lo que se está demostrando es que un problema de tipo P puede ser transformado en un problema mucho más dificil, de tipo NP-Hard, siendo esta transformación también polinomial. Esto quiere decir que el coloreo es al menos tan difícil como el problema de las aulas.
-Esto no implica que podamos transformar todas las instancias del problema de coloreo en el problema de las aulas y ,por lo tanto, al no ser una transformación biyectiva, no se puede asegurar que *P = NP*
+Esto no implica que podamos transformar todas las instancias del problema de coloreo en el problema de las aulas. Por lo tanto, al no ser una transformación biyectiva, no se puede asegurar que *P = NP*
