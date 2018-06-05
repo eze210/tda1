@@ -7,7 +7,7 @@ def loadGame(fileName):
         for line in file:
             playerA.addShip(line)
     ships = playerA.getShips()
-    playerB = Grido3MissilePlayer(ships)
+    playerB = Grido3MissilePlayer(ships, numberOfGuns=2)
     return Game(playerA, playerB)
 
 
@@ -107,9 +107,10 @@ class ShipPlayer:
 Representa al jugador B
 """
 class MissilePlayer:
-    def __init__(self, shipList):
+    def __init__(self, shipList, numberOfGuns):
         print("MissileInit")
         self.shipList = shipList
+        self.numberOfGuns = numberOfGuns
 
     def playTurn(self, currentTurn):
         return self.chooseRow(currentTurn)
@@ -175,9 +176,14 @@ class Game:
         self.missilePlayer = missilePlayer
 
     def play(self):
-        while (self.shipPlayer.countActiveShips() > 0):
-            selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
-            self.shipPlayer.receiveMissile(selectedRow)
+        while self.shipPlayer.countActiveShips() > 0:
+            for _ in range(self.missilePlayer.numberOfGuns):
+                selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
+                print("Selected ship: {}".format(selectedRow))
+                self.shipPlayer.receiveMissile(selectedRow)
+                if self.shipPlayer.countActiveShips() == 0:
+                    break
+
             self.shipPlayer.step()
             self.shipPlayer.getStatus()
 
