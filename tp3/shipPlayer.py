@@ -6,8 +6,8 @@ def loadGame(fileName):
     with open(fileName, "r") as file:
         for line in file:
             playerA.addShip(line)
-    numActiveShips = playerA.countActiveShips()
-    playerB = MissilePlayer(numActiveShips)
+    ships = playerA.getShips()
+    playerB = GridoMissilePlayer(ships)
     return Game(playerA, playerB)
 
 
@@ -54,23 +54,34 @@ class ShipPlayer:
 
     def receiveMissile(self, rowNum):
         self.shipList[rowNum].applyDamage(self.currentTurn)
+        
+    def step(self):
         self.currentTurn += 1
 
     def countActiveShips(self):
         return sum(1 for s in self.shipList if s.health > 0)
         
+    def getShips(self):
+        return self.shipList
 
 """
 Representa al jugador B
 """
 class MissilePlayer:
-    def __init__(self, numRows):
-        self.shipStatusList = [True] * numRows
+    def __init__(self, shipList):
+        print("MissileInit")
+        self.shipList = shipList
 
     def playTurn(self):
         return self.chooseRow()
 
     def chooseRow(self):
+        return 0
+
+
+class GridoMissilePlayer(MissilePlayer):
+    def chooseRow(self):
+        print ("Shiplist size {}".format(len(self.shipList)))
         return 0
 
 """
@@ -85,6 +96,7 @@ class Game:
         while (self.shipPlayer.countActiveShips() > 0):
             selectedRow = self.missilePlayer.playTurn()
             self.shipPlayer.receiveMissile(selectedRow)
+            self.shipPlayer.step()
             self.shipPlayer.getStatus()
 
 if __name__ == "__main__":
