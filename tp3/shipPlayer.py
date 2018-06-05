@@ -37,6 +37,10 @@ class Ship:
         if self.health < 0:
             self.health = 0
 
+    """ 
+    Devuelve la cantidad de tiros consecutivos que se necesitan para matar al
+    barco comenzando por el turno actual
+    """     
     def getNumberOfConsecutiveShotsToDie(self, currentTurn):
         if self.health <= 0:
             return Infinite
@@ -46,7 +50,11 @@ class Ship:
             appliedDamage += self.getDamageForCurrentTurn(currentTurn)
             number += 1
         return number
-    
+
+    """
+    Devuelve la cantidad de danio que se le haria al barco si se le disparara
+    en el turno actual
+    """    
     def getDamageForCurrentTurn(self, currentTurn):
         currentIndex = currentTurn % len(self.damageList)
         return self.damageList[currentIndex]
@@ -87,6 +95,7 @@ class ShipPlayer:
     def getShips(self):
         return self.shipList
 
+
 """
 Representa al jugador B
 """
@@ -114,6 +123,7 @@ class Grido1MissilePlayer(MissilePlayer):
         
         return selectedRow
 
+
 class Grido2MissilePlayer(MissilePlayer):
     def chooseRow(self, currentTurn):
         maximumDamage = 0
@@ -125,6 +135,7 @@ class Grido2MissilePlayer(MissilePlayer):
                 maximumDamage = damage
         
         return selectedRow
+
 
 class Grido3MissilePlayer(MissilePlayer):
     def chooseRow(self, currentTurn):
