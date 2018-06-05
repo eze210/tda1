@@ -123,6 +123,9 @@ class Grido1MissilePlayer(MissilePlayer):
         minimumNumberOfShots = Infinite
         selectedRow = 0
         for row, ship in enumerate(self.shipList):
+            if not ship.health > 0:
+                continue
+
             numberOfShots = ship.getNumberOfConsecutiveShotsToDie(currentTurn)
             if numberOfShots < minimumNumberOfShots:
                 selectedRow = row
