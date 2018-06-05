@@ -58,7 +58,14 @@ class Ship:
     def getDamageForCurrentTurn(self, currentTurn):
         currentIndex = currentTurn % len(self.damageList)
         return self.damageList[currentIndex]
-        
+
+    """
+    Devuelve el porcentaje de danio que se le haria al barco si se le disparara
+    en el turno actual
+    """    
+    def getDamagePercentageForCurrentTurn(self, currentTurn):
+        currentIndex = currentTurn % len(self.damageList)
+        return self.damageList[currentIndex] / self.health
 
 
 """
@@ -129,8 +136,11 @@ class Grido2MissilePlayer(MissilePlayer):
         maximumDamage = 0
         selectedRow = 0
         for row, ship in enumerate(self.shipList):
+            if not ship.health > 0:
+                continue
+
             damage = ship.getDamageForCurrentTurn(currentTurn)
-            if damage > maximumDamage and ship.health > 0:
+            if damage > maximumDamage:
                 selectedRow = row
                 maximumDamage = damage
         
@@ -145,7 +155,7 @@ class Grido3MissilePlayer(MissilePlayer):
             if not ship.health > 0:
                 continue
 
-            damagePercentage = ship.getDamageForCurrentTurn(currentTurn) / ship.health
+            damagePercentage = ship.getDamagePercentageForCurrentTurn(currentTurn)
             if damagePercentage > maximumDamagePercentage:
                 selectedRow = row
                 maximumDamagePercentage = damagePercentage
