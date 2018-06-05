@@ -1,5 +1,5 @@
 from sys import argv
-
+from math import inf as Infinite
 
 def loadGame(fileName):
     playerA = ShipPlayer()
@@ -7,7 +7,7 @@ def loadGame(fileName):
         for line in file:
             playerA.addShip(line)
     ships = playerA.getShips()
-    playerB = GridoMissilePlayer(ships)
+    playerB = Grido3MissilePlayer(ships)
     return Game(playerA, playerB)
 
 
@@ -32,9 +32,26 @@ class Ship:
     Aplica el dano segun el turno actual y el vector de danios
     """ 
     def applyDamage(self, currentTurn):
-        currentIndex = currentTurn % len(self.damageList)
-        currentDamage = self.damageList[currentIndex]
+        currentDamage = self.getDamageForCurrentTurn(currentTurn)
         self.health -= currentDamage
+        if self.health < 0:
+            self.health = 0
+
+    def getNumberOfConsecutiveShotsToDie(self, currentTurn):
+        if self.health <= 0:
+            return Infinite
+        appliedDamage = 0
+        number = 0
+        while appliedDamage < self.health:
+            appliedDamage += self.getDamageForCurrentTurn(currentTurn)
+            number += 1
+        return number
+    
+    def getDamageForCurrentTurn(self, currentTurn):
+        currentIndex = currentTurn % len(self.damageList)
+        return self.damageList[currentIndex]
+        
+
 
 """
 Representa al jugador A
@@ -43,10 +60,12 @@ class ShipPlayer:
     def __init__(self):
         self.currentTurn = 0
         self.shipList = []
+        self.points = 0
 
     def getStatus(self):
         for i, ship in enumerate(self.shipList):
             print("Barco {0}: {1} hp".format(i, ship.health))
+        print("Cantidad de puntos: {}".format(self.points))
 
     def addShip(self, strShip):
         ship = Ship.parseShip(strShip)
@@ -54,9 +73,13 @@ class ShipPlayer:
 
     def receiveMissile(self, rowNum):
         self.shipList[rowNum].applyDamage(self.currentTurn)
-        
+
     def step(self):
         self.currentTurn += 1
+        self.points += self.countActiveShips()
+
+    def getTurn(self):
+        return self.currentTurn
 
     def countActiveShips(self):
         return sum(1 for s in self.shipList if s.health > 0)
@@ -72,17 +95,52 @@ class MissilePlayer:
         print("MissileInit")
         self.shipList = shipList
 
-    def playTurn(self):
-        return self.chooseRow()
+    def playTurn(self, currentTurn):
+        return self.chooseRow(currentTurn)
 
-    def chooseRow(self):
+    def chooseRow(self, currentTurn):
         return 0
 
 
-class GridoMissilePlayer(MissilePlayer):
-    def chooseRow(self):
-        print ("Shiplist size {}".format(len(self.shipList)))
-        return 0
+class Grido1MissilePlayer(MissilePlayer):
+    def chooseRow(self, currentTurn):
+        minimumNumberOfShots = Infinite
+        selectedRow = 0
+        for row, ship in enumerate(self.shipList):
+            numberOfShots = ship.getNumberOfConsecutiveShotsToDie(currentTurn)
+            if numberOfShots < minimumNumberOfShots:
+                selectedRow = row
+                minimumNumberOfShots = numberOfShots
+        
+        return selectedRow
+
+class Grido2MissilePlayer(MissilePlayer):
+    def chooseRow(self, currentTurn):
+        maximumDamage = 0
+        selectedRow = 0
+        for row, ship in enumerate(self.shipList):
+            damage = ship.getDamageForCurrentTurn(currentTurn)
+            if damage > maximumDamage and ship.health > 0:
+                selectedRow = row
+                maximumDamage = damage
+        
+        return selectedRow
+
+class Grido3MissilePlayer(MissilePlayer):
+    def chooseRow(self, currentTurn):
+        maximumDamagePercentage = 0
+        selectedRow = 0
+        for row, ship in enumerate(self.shipList):
+            if not ship.health > 0:
+                continue
+
+            damagePercentage = ship.getDamageForCurrentTurn(currentTurn) / ship.health
+            if damagePercentage > maximumDamagePercentage:
+                selectedRow = row
+                maximumDamagePercentage = damagePercentage
+        
+        return selectedRow
+
 
 """
 Representa un juego
@@ -94,7 +152,7 @@ class Game:
 
     def play(self):
         while (self.shipPlayer.countActiveShips() > 0):
-            selectedRow = self.missilePlayer.playTurn()
+            selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
             self.shipPlayer.receiveMissile(selectedRow)
             self.shipPlayer.step()
             self.shipPlayer.getStatus()
