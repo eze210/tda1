@@ -47,7 +47,7 @@ class Ship:
         appliedDamage = 0
         number = 0
         while appliedDamage < self.health:
-            appliedDamage += self.getDamageForCurrentTurn(currentTurn)
+            appliedDamage += self.getDamageForCurrentTurn(currentTurn + number)
             number += 1
         return number
 
@@ -108,7 +108,6 @@ Representa al jugador B
 """
 class MissilePlayer:
     def __init__(self, shipList, numberOfGuns):
-        print("MissileInit")
         self.shipList = shipList
         self.numberOfGuns = numberOfGuns
 
@@ -189,7 +188,7 @@ class Game:
 
 if __name__ == "__main__":
     if len(argv) < 2:
-        print("Uso: python ship.py <shipfile>")
+        print("Uso: python shipPlayer.py <shipfile>")
         exit(1)
     fileName = argv[1]
     print("Cargando {0}".format(fileName))
