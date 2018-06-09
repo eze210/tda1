@@ -22,17 +22,32 @@ class ShipButton(Button):
         self.parent.update()
 
 
+class ShipLabel(Label):
+
+    def __init__(self, ship, game, **kwargs):
+        super(ShipLabel, self).__init__(**kwargs)
+        self.ship = ship
+        self.game = game
+        self.totalHealth = ship.health
+
+    def updateHealth(self):
+        self.text = "Vida restante:\n{} de {}".format(self.ship.health, self.totalHealth)
+
+
 class GridView(GridLayout):
 
     def __init__(self, game, **kwargs):
         super(GridView, self).__init__(**kwargs)
         self.game = game
         self.buttons = {}
+        self.labels = []
         ships = game.shipPlayer.getShips()
         self.rows = len(ships)
         for ship in ships:
-            label = Label(halign='center', text="Vida restante:\n{}".format(ship.health))
+            label = ShipLabel(ship, game, halign='center')
+            label.updateHealth()
             self.add_widget(label)
+            self.labels.append(label)
             for turn, d in enumerate(ship.damageList):
                 if turn not in self.buttons:
                     self.buttons[turn] = []
@@ -48,9 +63,12 @@ class GridView(GridLayout):
         for turn, buttons in self.buttons.items():
             for button in buttons:
                 if turn is currentTurn % len(self.buttons):
-                    button.disabled = False
+                    button.disabled = (button.ship.health == 0)
                 else:
                     button.disabled = True
+
+        for label in self.labels:
+            label.updateHealth()
 
 
 class GameView(GridLayout):
