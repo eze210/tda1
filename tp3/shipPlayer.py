@@ -15,7 +15,8 @@ def loadGame(fileName):
 Representa un barco con sus puntos de vida y vector de dano
 """
 class Ship:
-    def __init__(self, health, damageList):
+    def __init__(self, identifier, health, damageList):
+        self.identifier = identifier
         self.health = health
         self.damageList = damageList
 
@@ -23,10 +24,10 @@ class Ship:
     Crea un barco a partir de su representacion en string
     """
     @staticmethod
-    def parseShip(strShip):
+    def parseShip(identifier, strShip):
         shipParamsStr = strShip.split(" ")
         shipParams = [int(x) for x in shipParamsStr]
-        return Ship(shipParams[0], shipParams[1:])
+        return Ship(identifier, shipParams[0], shipParams[1:])
 
     """ 
     Aplica el dano segun el turno actual y el vector de danios
@@ -83,7 +84,7 @@ class ShipPlayer:
         print("Cantidad de puntos: {}".format(self.points))
 
     def addShip(self, strShip):
-        ship = Ship.parseShip(strShip)
+        ship = Ship.parseShip(len(self.shipList), strShip)
         self.shipList.append(ship)
 
     def receiveMissile(self, rowNum):
@@ -173,18 +174,26 @@ class Game:
     def __init__(self, shipPlayer, missilePlayer):
         self.shipPlayer = shipPlayer
         self.missilePlayer = missilePlayer
+        self.gunsUsedInTheCurrentTurn = 0
 
     def play(self):
         while self.shipPlayer.countActiveShips() > 0:
-            for _ in range(self.missilePlayer.numberOfGuns):
-                selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
-                print("Selected ship: {}".format(selectedRow))
-                self.shipPlayer.receiveMissile(selectedRow)
-                if self.shipPlayer.countActiveShips() == 0:
-                    break
+            selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
+            self.selectRow(selectedRow)
 
+    def selectRow(self, selectedRow):
+        print("Selected ship: {}".format(selectedRow))
+        self.shipPlayer.receiveMissile(selectedRow)
+        self.shipPlayer.getStatus()
+
+        self.gunsUsedInTheCurrentTurn += 1
+        if self.gunsUsedInTheCurrentTurn == self.missilePlayer.numberOfGuns:
             self.shipPlayer.step()
-            self.shipPlayer.getStatus()
+            self.gunsUsedInTheCurrentTurn = 0
+
+    def getCurrentTurn(self):
+        return self.shipPlayer.currentTurn
+
 
 if __name__ == "__main__":
     if len(argv) < 2:
