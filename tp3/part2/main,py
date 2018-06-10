@@ -1,0 +1,68 @@
+from structures.graph import Graph
+from structures.heap import MaxHeap
+
+def inverted_edge_cmp(edge1, edge2):
+    weight1 = edge1[2]
+    weight2 = edge2[2]
+
+    if (weight1 < weight2):
+        return 1
+    if (weight1 == weight2):
+        return 0
+
+    return -1;
+
+def maximun_capacity_edges(graph, n):
+    maxEdges = MaxHeap(inverted_edge_cmp)
+    vertices = graph.getVertices();
+
+    for vertex1 in vertices:
+        adjacents = graph.getAdjacents(vertex1)
+        for vertex2 in adjacent:
+            edge = (vertex1, vertex2, graph.getEdgeWeight(vertex1, vertex2))
+
+            if (maxEdges.size() < n):
+                maxEdges.push(edge)
+            if (inverted_edge_cmp(maxEdges.top(), edge) > 0):
+                maxEdges.pop()
+                maxEdges.push(edge)
+
+    edges = []
+    while (!maxEdges.empty()):
+        edge = maxEdges.pop()
+        edges.append(edge[0], edge[1])
+
+    return edges
+
+#Que pasa si hay más de un corte minimo posible?
+def get_min_cut(graph):
+    min_cut = []
+    residualGraph = graph.getResidualGraph();
+    vertices = graph.getVertices();
+
+    for vertex1 in vertices:
+        adjacents = graph.getAdjacents(vertex1)
+        for vertex2 in adjacent:
+            if (residualGraph.getEdgeWeight(vertex1, vertex2) == 0 and graph.getEdgeWeight(vertex1, vertex2) != 0):
+                edges.append((vertex1, vertex2))
+            
+    return min_cut
+
+def maximun_capacity_edges_min_cut(graph, n):
+    min_cut = get_min_cut(graph)
+    maxEdges = MaxHeap(inverted_edge_cmp)
+
+    for edge in min_cut:
+        edge_with_weight = (edge[0], edge[1], graph.getEdgeWeight(edge[0], edge[1]))
+        if (maxEdges.size() < n):
+            maxEdges.push(edge_with_weight)
+        if (inverted_edge_cmp(maxEdges.top(), edge_with_weight) > 0):
+            maxEdges.pop()
+            maxEdges.push(edge_with_weight)
+
+    edges = []
+    while (!maxEdges.empty()):
+        edge = maxEdges.pop()
+        edges.append(edge[0], edge[1])
+
+    return edges
