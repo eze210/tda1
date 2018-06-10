@@ -1,13 +1,13 @@
 from sys import argv
 from math import inf as Infinite
 
-def loadGame(fileName):
+def loadGame(fileName, numberOfGuns):
     playerA = ShipPlayer()
     with open(fileName, "r") as file:
         for line in file:
             playerA.addShip(line)
     ships = playerA.getShips()
-    playerB = Grido3MissilePlayer(ships, numberOfGuns=2)
+    playerB = Grido3MissilePlayer(ships, numberOfGuns)
     return Game(playerA, playerB)
 
 
@@ -201,5 +201,5 @@ if __name__ == "__main__":
         exit(1)
     fileName = argv[1]
     print("Cargando {0}".format(fileName))
-    game = loadGame(fileName)
+    game = loadGame(fileName, numberOfGuns=2)
     game.play()

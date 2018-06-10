@@ -5,6 +5,7 @@ from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.filechooser import FileChooser, FileChooserIconView
+from kivy.uix.textinput import TextInput
 
 from shipPlayer import *
 
@@ -96,13 +97,17 @@ class GameView(GridLayout):
         super(GameView, self).__init__(**kwargs)
 
         self.cols = 1
+        self.textinput = TextInput(text='1', input_filter='int', size_hint_y=None, height=25)
         self.chooser = MyFileChooser(path=".")
+
+        self.add_widget(self.textinput)
         self.add_widget(self.chooser)
 
     def loadFile(self, fileName):
-        print(fileName)
-        self.game = loadGame(fileName)
+        numberOfGuns = int(self.textinput.text)
+        self.game = loadGame(fileName, numberOfGuns)
         self.gridView = GridView(self.game)
+        self.remove_widget(self.textinput)
         self.remove_widget(self.chooser)
         self.add_widget(self.gridView)
 
