@@ -108,8 +108,12 @@ def hit_boat(D, dmg, dmg_grid, hitpoints, turn, shots_left, total_shots, seq, po
         min_pts = float("inf")  # the points of the best intermediate solution
         min_prev_seq = None     # the sequence of shots done in that solution
 
+        # sorts the shots by higher damage as a heuristic to find the best solution earlier and
+        # be able to discard more branches
+        shots = sorted(range(len(hitpoints)), key=lambda x: -dmg_grid[x][column])
+
         # hits every boat and gets the best intermediate solution
-        for b in range(len(hitpoints)):
+        for b in shots:
             # if the boat was already destroyed, skips the branch
             if dmg[b] >= hitpoints[b]:
                 continue
@@ -156,7 +160,7 @@ if __name__ == '__main__':
         [10, 1, 30, 20, 10, 25, 10, 40],
         [0, 5, 20, 40, 5, 1, 20, 20],
     ]
-    boats_health = [35, 105, 151]
+    boats_health = [235, 155, 151]
     print_level(boats_health, level)
     shots_per_turn = 3
 
