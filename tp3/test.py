@@ -80,8 +80,8 @@ def hit_boat(D, dmg, dmg_grid, hitpoints, turn, shots_left, total_shots, seq, po
     dmg_tuple = tuple(dmg)
     column = turn % len(dmg_grid[0])
 
-    # if there is a better case already calculated and it's better than the current branch,
-    # aborts the search because it cannot be better
+    # if there is a branch already finished and it's better than the current one,
+    # aborts the search because it cannot improve the best solution found yet
     if D['best_case'] <= points:
         return float("inf"), tuple()
 
