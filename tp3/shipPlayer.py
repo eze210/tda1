@@ -1,5 +1,11 @@
 from sys import argv
-from math import inf as Infinite
+
+try:
+    from math import inf as Infinite
+except Exception as e:
+    Infinite = float('inf')
+
+from dynamic import *
 
 def loadGame(fileName, numberOfGuns):
     playerA = ShipPlayer()
@@ -7,7 +13,7 @@ def loadGame(fileName, numberOfGuns):
         for line in file:
             playerA.addShip(line)
     ships = playerA.getShips()
-    playerB = Grido3MissilePlayer(ships, numberOfGuns)
+    playerB = DinamicoMissilePlayer(ships, numberOfGuns)
     return Game(playerA, playerB)
 
 
@@ -112,15 +118,15 @@ class MissilePlayer:
         self.shipList = shipList
         self.numberOfGuns = numberOfGuns
 
-    def playTurn(self, currentTurn):
-        return self.chooseRow(currentTurn)
+    def playTurn(self, currentTurn, numberOfGuns):
+        return self.chooseRow(currentTurn, numberOfGuns)
 
-    def chooseRow(self, currentTurn):
+    def chooseRow(self, currentTurn, numberOfGuns):
         return 0
 
 
 class Grido1MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn):
+    def chooseRow(self, currentTurn, numberOfGuns):
         minimumNumberOfShots = Infinite
         selectedRow = 0
         for row, ship in enumerate(self.shipList):
@@ -136,7 +142,7 @@ class Grido1MissilePlayer(MissilePlayer):
 
 
 class Grido2MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn):
+    def chooseRow(self, currentTurn, numberOfGuns):
         maximumDamage = 0
         selectedRow = 0
         for row, ship in enumerate(self.shipList):
@@ -152,7 +158,7 @@ class Grido2MissilePlayer(MissilePlayer):
 
 
 class Grido3MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn):
+    def chooseRow(self, currentTurn, numberOfGuns):
         maximumDamagePercentage = 0
         selectedRow = 0
         for row, ship in enumerate(self.shipList):
@@ -167,6 +173,19 @@ class Grido3MissilePlayer(MissilePlayer):
         return selectedRow
 
 
+class DinamicoMissilePlayer(MissilePlayer):
+    def __init__(self, shipList, numberOfGuns):
+        super(DinamicoMissilePlayer, self).__init__(shipList, numberOfGuns)
+        dmgGrid = [x.damageList for x in shipList]
+        hitpoints = [x.health for x in shipList]
+        self.solution = solve_game(dmgGrid, hitpoints, numberOfGuns)
+        self.solution = [item for sublist in self.solution[1] for item in sublist]
+        print(self.solution)
+
+    def chooseRow(self, currentTurn, numberOfGuns):
+        return self.solution[currentTurn * self.numberOfGuns + numberOfGuns]
+
+
 """
 Representa un juego
 """
@@ -178,7 +197,7 @@ class Game:
 
     def play(self):
         while self.shipPlayer.countActiveShips() > 0:
-            selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
+            selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn(), self.gunsUsedInTheCurrentTurn)
             self.selectRow(selectedRow)
 
     def selectRow(self, selectedRow):
@@ -201,5 +220,5 @@ if __name__ == "__main__":
         exit(1)
     fileName = argv[1]
     print("Cargando {0}".format(fileName))
-    game = loadGame(fileName, numberOfGuns=2)
+    game = loadGame(fileName, numberOfGuns=4)
     game.play()

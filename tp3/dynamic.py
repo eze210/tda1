@@ -162,7 +162,7 @@ if __name__ == '__main__':
     ]
     boats_health = [235, 155, 151]
     print_level(boats_health, level)
-    shots_per_turn = 3
+    shots_per_turn = 4
 
     # finds the solution
     solution = solve_game(level, boats_health, shots_per_turn)
