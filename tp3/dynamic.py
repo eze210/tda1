@@ -1,5 +1,8 @@
 from collections import defaultdict
-
+try:
+    from math import inf as Infinite
+except Exception as e:
+    Infinite = float('inf')
 
 def get_shoots(shots, boats, c=None):
 	"""Calculates the shots combinations for given number of shots and boats.
@@ -130,9 +133,9 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 	num_boats = len(dmg_grid)
 
 	# checks if the current branch is a very bad solution
-	if D['best_case'] <= points_in_turn:
+	if D['best_case'] < points_in_turn:
 		# return a very bad answer
-		return float('inf'), tuple()
+		return Infinite, tuple()
 
 	# checks if this sub problem was already solved
 	if (column, hitpoints) in D:
@@ -148,7 +151,7 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 		return (0, tuple())
 
 	# inits the solution for the current turn
-	best_points = float('inf')
+	best_points = Infinite
 	best_sequence = tuple()
 	best_solution_future = tuple()
 
@@ -178,7 +181,7 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 	# saves the sub problem in a memory
 	subproblem_points = best_points + count_ships(hitpoints)
 	subproblem_sequence = (best_sequence,) + best_solution_future
-	if subproblem_points < float('inf'):
+	if subproblem_points < Infinite:
 		D[(column, hitpoints)] = (subproblem_points, subproblem_sequence)
 	return (subproblem_points, subproblem_sequence)
 
@@ -194,7 +197,7 @@ def solve_game(dmg_grid, hitpoints, num_shots):
 	` the total number of shots allowed in a single turn.
 	"""
 	D = defaultdict(dict)
-	D['best_case'] = float('inf')
+	D['best_case'] = Infinite
 	return recursive_solve(D, dmg_grid, tuple(hitpoints), num_shots, 0, 0)
 
 

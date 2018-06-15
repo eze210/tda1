@@ -7,7 +7,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.filechooser import FileChooser, FileChooserIconView
 from kivy.uix.textinput import TextInput
 
-from shipPlayer import *
+from game import *
 
 
 class StartButton(Button):
@@ -105,7 +105,7 @@ class GameView(GridLayout):
 
     def loadFile(self, fileName):
         numberOfGuns = int(self.textinput.text)
-        self.game = loadGame(fileName, numberOfGuns)
+        self.game = loadGame(fileName, numberOfGuns, PlayerClasses['dyn'])
         self.gridView = GridView(self.game)
         self.remove_widget(self.textinput)
         self.remove_widget(self.chooser)

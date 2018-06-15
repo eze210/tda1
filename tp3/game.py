@@ -1,19 +1,18 @@
 from sys import argv
-
 try:
     from math import inf as Infinite
 except Exception as e:
     Infinite = float('inf')
 
-from dynamic import *
+from players import *
 
-def loadGame(fileName, numberOfGuns):
+def loadGame(fileName, numberOfGuns, PlayerClass):
     playerA = ShipPlayer()
     with open(fileName, "r") as file:
         for line in file:
             playerA.addShip(line)
     ships = playerA.getShips()
-    playerB = DinamicoMissilePlayer(ships, numberOfGuns)
+    playerB = PlayerClass(ships, numberOfGuns)
     return Game(playerA, playerB)
 
 
@@ -111,82 +110,6 @@ class ShipPlayer:
 
 
 """
-Representa al jugador B
-"""
-class MissilePlayer:
-    def __init__(self, shipList, numberOfGuns):
-        self.shipList = shipList
-        self.numberOfGuns = numberOfGuns
-
-    def playTurn(self, currentTurn, numberOfGuns):
-        return self.chooseRow(currentTurn, numberOfGuns)
-
-    def chooseRow(self, currentTurn, numberOfGuns):
-        return 0
-
-
-class Grido1MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn, numberOfGuns):
-        minimumNumberOfShots = Infinite
-        selectedRow = 0
-        for row, ship in enumerate(self.shipList):
-            if not ship.health > 0:
-                continue
-
-            numberOfShots = ship.getNumberOfConsecutiveShotsToDie(currentTurn)
-            if numberOfShots < minimumNumberOfShots:
-                selectedRow = row
-                minimumNumberOfShots = numberOfShots
-        
-        return selectedRow
-
-
-class Grido2MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn, numberOfGuns):
-        maximumDamage = 0
-        selectedRow = 0
-        for row, ship in enumerate(self.shipList):
-            if not ship.health > 0:
-                continue
-
-            damage = ship.getDamageForCurrentTurn(currentTurn)
-            if damage > maximumDamage:
-                selectedRow = row
-                maximumDamage = damage
-        
-        return selectedRow
-
-
-class Grido3MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn, numberOfGuns):
-        maximumDamagePercentage = 0
-        selectedRow = 0
-        for row, ship in enumerate(self.shipList):
-            if not ship.health > 0:
-                continue
-
-            damagePercentage = ship.getDamagePercentageForCurrentTurn(currentTurn)
-            if damagePercentage > maximumDamagePercentage:
-                selectedRow = row
-                maximumDamagePercentage = damagePercentage
-        
-        return selectedRow
-
-
-class DinamicoMissilePlayer(MissilePlayer):
-    def __init__(self, shipList, numberOfGuns):
-        super(DinamicoMissilePlayer, self).__init__(shipList, numberOfGuns)
-        dmgGrid = [x.damageList for x in shipList]
-        hitpoints = [x.health for x in shipList]
-        self.solution = solve_game(dmgGrid, hitpoints, numberOfGuns)
-        self.solution = [item for sublist in self.solution[1] for item in sublist]
-        print(self.solution)
-
-    def chooseRow(self, currentTurn, numberOfGuns):
-        return self.solution[currentTurn * self.numberOfGuns + numberOfGuns]
-
-
-"""
 Representa un juego
 """
 class Game:
@@ -194,11 +117,15 @@ class Game:
         self.shipPlayer = shipPlayer
         self.missilePlayer = missilePlayer
         self.gunsUsedInTheCurrentTurn = 0
+        
+        self.turnSequence = []
+        self.completeSequence = []
 
     def play(self):
         while self.shipPlayer.countActiveShips() > 0:
             selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn(), self.gunsUsedInTheCurrentTurn)
             self.selectRow(selectedRow)
+        return self.shipPlayer.points, tuple(self.completeSequence)
 
     def selectRow(self, selectedRow):
         print("Selected ship: {}".format(selectedRow))
@@ -206,19 +133,25 @@ class Game:
         self.shipPlayer.getStatus()
 
         self.gunsUsedInTheCurrentTurn += 1
+        self.turnSequence.append(selectedRow)
         if self.gunsUsedInTheCurrentTurn == self.missilePlayer.numberOfGuns:
             self.shipPlayer.step()
             self.gunsUsedInTheCurrentTurn = 0
+            self.completeSequence.append(tuple(self.turnSequence))
+            self.turnSequence = []
+
 
     def getCurrentTurn(self):
         return self.shipPlayer.currentTurn
 
 
 if __name__ == "__main__":
-    if len(argv) < 2:
-        print("Uso: python shipPlayer.py <shipfile>")
+    if len(argv) < 4:
+        print("Usage: python game.py <gridfile> <guns> <playerclass>")
         exit(1)
     fileName = argv[1]
-    print("Cargando {0}".format(fileName))
-    game = loadGame(fileName, numberOfGuns=4)
-    game.play()
+    numberOfGuns = int(argv[2])
+    PlayerClass = PlayerClasses[argv[3]]
+    print("Loading {0}...".format(fileName))
+    game = loadGame(fileName, numberOfGuns, PlayerClass)
+    print(game.play())
