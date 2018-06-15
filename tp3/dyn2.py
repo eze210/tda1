@@ -1,6 +1,12 @@
 from collections import defaultdict
 
+
 def get_shoots(shots, boats, c=None):
+	"""Calculates the shots combinations for given number of shots and boats.
+	`shots` number of shots.
+	`boats` number of boats.
+	`c` previous result.
+	"""
 	if shots == 0:
 		yield tuple(c)
 		return
@@ -98,6 +104,9 @@ def should_ignore_shots_combination(hitpoints, shots_combination):
 
 
 def count_ships(hitpoints):
+	"""Counts the number of ships with hp > 0.
+	`hitpoints` the current hp for each ship.
+	"""
 	count = 0
 	for hp in hitpoints:
 		if hp > 0:
@@ -106,6 +115,9 @@ def count_ships(hitpoints):
 
 
 def combination_to_sequence(combination):
+	"""Translates a combination of shots to a sequence of shots.
+	`combination` the shots combination.
+	"""
 	comb = []
 	for boat, num_shots2 in enumerate(combination):
 		comb += ([boat] * num_shots2)
@@ -113,6 +125,7 @@ def combination_to_sequence(combination):
 
 
 def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
+	"""Recursive function that solves the problem."""
 	column = turn % len(dmg_grid[0])
 	num_boats = len(dmg_grid)
 
@@ -122,7 +135,7 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 		return float('inf'), tuple()
 
 	# checks if this sub problem was already solved
-	if (column, hitpoints) in D and D[(column, hitpoints)][0] < float('inf'):
+	if (column, hitpoints) in D:
 		return D[(column, hitpoints)]
 
 	# base case (all ships are dead)
@@ -194,7 +207,7 @@ if __name__ == '__main__':
 	]
 	boats_health = [800, 800, 800]
 	print_level(boats_health, level)
-	shots_per_turn = 5
+	shots_per_turn = 1
 
 	# finds the solution
 	solution = solve_game(level, boats_health, shots_per_turn)
