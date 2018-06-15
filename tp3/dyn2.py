@@ -117,12 +117,12 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 	num_boats = len(dmg_grid)
 
 	# checks if the current branch is a very bad solution
-	#if D['best_case'] <= points_in_turn:
-	#	# return a very bad answer
-	#	return float("inf"), tuple()
+	if D['best_case'] <= points_in_turn:
+		# return a very bad answer
+		return float('inf'), tuple()
 
 	# checks if this sub problem was already solved
-	if (column, hitpoints) in D:
+	if (column, hitpoints) in D and D[(column, hitpoints)][0] < float('inf'):
 		return D[(column, hitpoints)]
 
 	# base case (all ships are dead)
@@ -163,9 +163,11 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 			best_solution_future = solution_future
 
 	# saves the sub problem in a memory
-	D[(column, hitpoints)] = (best_points + count_ships(hitpoints), (best_sequence,) + best_solution_future)
-	return D[(column, hitpoints)]
-
+	subproblem_points = best_points + count_ships(hitpoints)
+	subproblem_sequence = (best_sequence,) + best_solution_future
+	if subproblem_points < float('inf'):
+		D[(column, hitpoints)] = (subproblem_points, subproblem_sequence)
+	return (subproblem_points, subproblem_sequence)
 
 
 def solve_game(dmg_grid, hitpoints, num_shots):
@@ -192,7 +194,7 @@ if __name__ == '__main__':
 	]
 	boats_health = [800, 800, 800]
 	print_level(boats_health, level)
-	shots_per_turn = 1
+	shots_per_turn = 5
 
 	# finds the solution
 	solution = solve_game(level, boats_health, shots_per_turn)
