@@ -1,4 +1,5 @@
 from collections import defaultdict
+from pretty_printer import *
 try:
     from math import inf as Infinite
 except Exception as e:
@@ -20,44 +21,6 @@ def get_shoots(shots, boats, c=None):
 		for e in get_shoots(shots - 1, boats, p):
 			yield e
 		p[i] -= 1
-
-
-def print_level(hitpoints, dmg_grid):
-	"""Prints the grid of damage in a pretty format."""
-
-	assert len(hitpoints) == len(dmg_grid)
-	for hp, row in zip(hitpoints, dmg_grid):
-		print('{:3} '.format(hp), end='')
-		print('[' + ', '.join('{:3}'.format(e) for e in row) + ']')
-
-
-def print_hp(boats_health, hit_index, dmg, turn):
-	"""Pints the HP of the boats.
-	`boats_health` is the current HP of each boat.
-	`hit_index` the index of the boat hitted in this step.
-	`dmg` the damage done to that boat.
-	`turn` the current turn.
-	"""
-	print('[', end='')
-	for i, e in enumerate(boats_health):
-		fmt = '{:3}'
-		if i == hit_index:
-			fmt = '\033[0;31m{:3}\033[0m'
-		print(fmt.format(e), end=', ')
-	print('] ({:3}) in turn {:2}'.format(-dmg, turn))
-
-
-def run_simulation(level, boats_health, solution):
-	"""Given a sequence of shots, simulates and shows a step-by-step execution of the game."""
-
-	for turn, sequence in enumerate(solution):
-		for boat in sequence:
-			dmg = level[boat][turn % len(level[0])]
-			boats_health[boat] -= dmg
-			print_hp(boats_health, boat, dmg, turn)
-
-		alive_boats = [x for x in boats_health if x > 0]
-		print('{: >35}\033[0;32m(+{})\033[0m'.format('', len(alive_boats)))
 
 
 def boats_left(hitpoints, damage):
@@ -154,6 +117,7 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 	best_points = Infinite
 	best_sequence = tuple()
 	best_solution_future = tuple()
+	best_hitpoints = hitpoints
 
 	# iterates over all shots combinations for the current turn
 	for shots_combination in get_shoots(num_shots, num_boats):
@@ -177,9 +141,10 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 			best_points = combination_points
 			best_sequence = combination_to_sequence(shots_combination)
 			best_solution_future = solution_future
+			best_hitpoints = combination_hitpoints
 
 	# saves the sub problem in a memory
-	subproblem_points = best_points + count_ships(hitpoints)
+	subproblem_points = best_points + count_ships(best_hitpoints)
 	subproblem_sequence = (best_sequence,) + best_solution_future
 	if subproblem_points < Infinite:
 		D[(column, hitpoints)] = (subproblem_points, subproblem_sequence)

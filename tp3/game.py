@@ -1,10 +1,11 @@
 from sys import argv
+from players import *
+from pretty_printer import run_simulation
 try:
     from math import inf as Infinite
 except Exception as e:
     Infinite = float('inf')
 
-from players import *
 
 def loadGame(fileName, numberOfGuns, PlayerClass):
     playerA = ShipPlayer()
@@ -121,16 +122,17 @@ class Game:
         self.turnSequence = []
         self.completeSequence = []
 
+
     def play(self):
         while self.shipPlayer.countActiveShips() > 0:
             selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn(), self.gunsUsedInTheCurrentTurn)
             self.selectRow(selectedRow)
         return self.shipPlayer.points, tuple(self.completeSequence)
 
+
     def selectRow(self, selectedRow):
         print("Selected ship: {}".format(selectedRow))
         self.shipPlayer.receiveMissile(selectedRow)
-        self.shipPlayer.getStatus()
 
         self.gunsUsedInTheCurrentTurn += 1
         self.turnSequence.append(selectedRow)
@@ -139,6 +141,8 @@ class Game:
             self.gunsUsedInTheCurrentTurn = 0
             self.completeSequence.append(tuple(self.turnSequence))
             self.turnSequence = []
+
+        self.shipPlayer.getStatus()
 
 
     def getCurrentTurn(self):
