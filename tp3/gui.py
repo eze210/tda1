@@ -202,6 +202,9 @@ class GameView(GridLayout):
     def update(self):
         self.gridView.update()
         self.statusView.update()
+        if self.game.shipPlayer.countActiveShips() == 0:
+            self.remove_widget(self.gridView)
+            self.add_widget(Label(text='JUEGO TERMINADO', size_hint_y=2))
 
 
 class GameApp(App):
