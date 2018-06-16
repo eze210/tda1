@@ -29,7 +29,7 @@ class ShipButton(Button):
     def on_press(self):
         super(ShipButton, self).on_press()
         self.game.selectRow(self.ship.identifier)
-        self.parent.update()
+        self.parent.parent.update()
 
 
 class PlayerCheckBox(CheckBox):
@@ -132,6 +132,29 @@ class GridView(GridLayout):
             label.updateHealth()
 
 
+class StatusView(GridLayout):
+
+    def __init__(self, game, **kwargs):
+        super(StatusView, self).__init__(**kwargs)
+        self.game = game
+        self.rows = 2
+        self.add_widget(Label(text='PUNTOS ACUMULADOS', halign='center'))
+        self.add_widget(Label(text='TURNO ACTUAL', halign='center'))
+        self.add_widget(Label(text='LANZADERAS USADAS\nEN ESTE TURNO', halign='center'))
+        self.pointsLabel = Label()
+        self.turnLabel = Label()
+        self.gunsLabel = Label()
+        self.add_widget(self.pointsLabel)
+        self.add_widget(self.turnLabel)
+        self.add_widget(self.gunsLabel)
+        self.update()
+
+    def update(self):
+        self.turnLabel.text = '{}'.format(self.game.getCurrentTurn())
+        self.pointsLabel.text = '{}'.format(self.game.shipPlayer.points)
+        self.gunsLabel.text = '{}'.format(self.game.gunsUsedInTheCurrentTurn)
+
+
 class MyFileChooser(FileChooserIconView):
 
     def __init__(self, **kwargs):
@@ -162,7 +185,12 @@ class GameView(GridLayout):
         self.add_widget(self.chooser)
 
     def setGridView(self):
-        self.gridView = GridView(self.game)
+        self.cols = 1
+
+        self.statusView = StatusView(self.game)
+        self.add_widget(self.statusView)
+
+        self.gridView = GridView(self.game, size_hint_y=2)
         self.add_widget(self.gridView)
 
     def loadFile(self, fileName):
@@ -170,6 +198,10 @@ class GameView(GridLayout):
         self.game = game.loadGame(fileName, numberOfGuns, game.players.PlayerClasses[self.leftPannel.getPlayerClass()])
         self.clear_widgets()
         self.setGridView()
+
+    def update(self):
+        self.gridView.update()
+        self.statusView.update()
 
 
 class GameApp(App):
