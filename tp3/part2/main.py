@@ -11,7 +11,7 @@ def edge_cmp(edge1, edge2):
 
     return -1;
 
-def maximun_capacity_edges(graph):
+def maximun_capacity_edge(graph):
     vertices = graph.getVertices();
     max_capacity = -1
     max_edge = None
@@ -19,13 +19,12 @@ def maximun_capacity_edges(graph):
     for vertex1 in vertices:
         adjacents = graph.getAdjacentVertices(vertex1)
         for vertex2 in adjacents:
-            edge = (vertex1, vertex2)
             capacity = graph.getEdgeWeight(vertex1, vertex2)
             if (capacity > max_capacity):
                 max_capacity = capacity
-                max_edge = edge
+                max_edge = (vertex1, vertex2)
 
-    return edge
+    return max_edge
 
 def minimun_flow_edge(graph, source, sink):
     edges = graph.getEdges()
@@ -69,7 +68,7 @@ def buildGraph(file_name):
             
 if __name__ == '__main__':
     g = buildGraph(file_name="./dataset/redsecreta.map")
-    print(maximun_capacity_edges(g))
+    print(maximun_capacity_edge(g))
     print(minimun_flow_edge(g, 0, 1))
 
 
