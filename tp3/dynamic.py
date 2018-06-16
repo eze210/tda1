@@ -5,28 +5,28 @@ try:
 except Exception as e:
     Infinite = float('inf')
 
-def get_shoots(shots, boats, c=None):
-	"""Calculates the shots combinations for given number of shots and boats.
+def get_shoots(shots, ships, c=None):
+	"""Calculates the shots combinations for given number of shots and ships.
 	`shots` number of shots.
-	`boats` number of boats.
+	`ships` number of ships.
 	`c` previous result.
 	"""
 	if shots == 0:
 		yield tuple(c)
 		return
 
-	for i in range(boats):
-		p = c or [0] * boats
+	for i in range(ships):
+		p = c or [0] * ships
 		p[i] += 1
-		for e in get_shoots(shots - 1, boats, p):
+		for e in get_shoots(shots - 1, ships, p):
 			yield e
 		p[i] -= 1
 
 
-def boats_left(hitpoints, damage):
-	"""Returns the number of boats not destroyed.
-	`hitpoints` the total HP of the boats.
-	`damage` accumulated damage for each boat.
+def ships_left(hitpoints, damage):
+	"""Returns the number of ships not destroyed.
+	`hitpoints` the total HP of the ships.
+	`damage` accumulated damage for each ship.
 	"""
 	count = 0
 	for hp, dmg in zip(hitpoints, damage):
@@ -37,27 +37,27 @@ def boats_left(hitpoints, damage):
 
 def apply_shots(hitpoints, shots_combination, dmg_grid, column):
 	"""Applies the damages to the hitpoints.
-	`hitpoints` the total HP of the boats.
+	`hitpoints` the total HP of the ships.
 	`shots_combination` the shots combination.
 	`dmg_grid` the input grid of the algorithm.
 	`column` the current column in the grid.
 	"""
 	hitpoints = list(hitpoints)
-	for boat, num_shots in enumerate(shots_combination):
-		hitpoints[boat] -= dmg_grid[boat][column] * num_shots
-		if hitpoints[boat] < 0:
-			hitpoints[boat] = 0
+	for ship, num_shots in enumerate(shots_combination):
+		hitpoints[ship] -= dmg_grid[ship][column] * num_shots
+		if hitpoints[ship] < 0:
+			hitpoints[ship] = 0
 	return tuple(hitpoints)
 
 
 def should_ignore_shots_combination(hitpoints, shots_combination):
 	"""Applies some rules to ignore the irrelevant combinations.
-	`hitpoints` the total HP of the boats.
+	`hitpoints` the total HP of the ships.
 	`shots_combination` the shots combination.
 	"""
 	# avoid shots to zero-hp ships
-	for boat, num_shots in enumerate(shots_combination):
-		if hitpoints[boat] == 0 and num_shots > 0:
+	for ship, num_shots in enumerate(shots_combination):
+		if hitpoints[ship] == 0 and num_shots > 0:
 			return True
 
 	# avoid repeated combinations
@@ -85,15 +85,15 @@ def combination_to_sequence(combination):
 	`combination` the shots combination.
 	"""
 	comb = []
-	for boat, num_shots2 in enumerate(combination):
-		comb += ([boat] * num_shots2)
+	for ship, num_shots2 in enumerate(combination):
+		comb += ([ship] * num_shots2)
 	return tuple(comb)
 
 
 def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 	"""Recursive function that solves the problem."""
 	column = turn % len(dmg_grid[0])
-	num_boats = len(dmg_grid)
+	num_ships = len(dmg_grid)
 
 	# checks if the current branch is a very bad solution
 	if D['best_case'] < points_in_turn:
@@ -120,7 +120,7 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 	best_hitpoints = hitpoints
 
 	# iterates over all shots combinations for the current turn
-	for shots_combination in get_shoots(num_shots, num_boats):
+	for shots_combination in get_shoots(num_shots, num_ships):
 		# checks some rules to ignore useless shots
 		if should_ignore_shots_combination(hitpoints, shots_combination):
 			continue
@@ -153,11 +153,11 @@ def recursive_solve(D, dmg_grid, hitpoints, num_shots, turn, points_in_turn):
 
 def solve_game(dmg_grid, hitpoints, num_shots):
 	"""Runs the algorithm that solves the game. The algorithm tries every possible
-	combination of shots while accumulating damage for each boat until every boat is destroyed
+	combination of shots while accumulating damage for each ship until every ship is destroyed
 	and then returns the sequence of shots that resulted in the minimum points.
 
 	`dmg_grid` is the grid of damage points for each position.
-	`hitpoints` the boats HP.
+	`hitpoints` the ships HP.
 	`num_shots
 	` the total number of shots allowed in a single turn.
 	"""
@@ -173,16 +173,16 @@ if __name__ == '__main__':
 		[400, 400, 50, 100],
 		[100, 100, 100, 100],
 	]
-	boats_health = [800, 800, 800]
-	print_level(boats_health, level)
+	ships_health = [800, 800, 800]
+	print_level(ships_health, level)
 	shots_per_turn = 1
 
 	# finds the solution
-	solution = solve_game(level, boats_health, shots_per_turn)
+	solution = solve_game(level, ships_health, shots_per_turn)
 	print()
 	print('points:', solution[0])
 	print('shot sequence:', solution[1])
 	print()
 
 	# runs and shows the game using the obtained solution
-	run_simulation(level, boats_health, solution[1])
+	run_simulation(level, ships_health, solution[1])
