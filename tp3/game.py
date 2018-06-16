@@ -1,5 +1,5 @@
 from sys import argv
-from players import *
+import players
 from pretty_printer import run_simulation
 try:
     from math import inf as Infinite
@@ -122,13 +122,11 @@ class Game:
         self.turnSequence = []
         self.completeSequence = []
 
-
     def play(self):
         while self.shipPlayer.countActiveShips() > 0:
-            selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn(), self.gunsUsedInTheCurrentTurn)
+            selectedRow = self.calculateNextShot()
             self.selectRow(selectedRow)
         return self.shipPlayer.points, tuple(self.completeSequence)
-
 
     def selectRow(self, selectedRow):
         print("Selected ship: {}".format(selectedRow))
@@ -144,9 +142,11 @@ class Game:
 
         self.shipPlayer.getStatus()
 
-
     def getCurrentTurn(self):
         return self.shipPlayer.currentTurn
+    
+    def calculateNextShot(self):
+        return self.missilePlayer.playTurn(self.shipPlayer.getTurn(), self.gunsUsedInTheCurrentTurn)
 
 
 if __name__ == "__main__":
@@ -155,7 +155,7 @@ if __name__ == "__main__":
         exit(1)
     fileName = argv[1]
     numberOfGuns = int(argv[2])
-    PlayerClass = PlayerClasses[argv[3]]
+    PlayerClass = players.PlayerClasses[argv[3]]
     print("Loading {0}...".format(fileName))
     game = loadGame(fileName, numberOfGuns, PlayerClass)
     print(game.play())

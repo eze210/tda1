@@ -8,8 +8,7 @@ from kivy.uix.filechooser import FileChooser, FileChooserIconView
 from kivy.uix.textinput import TextInput
 from kivy.uix.checkbox import CheckBox
 
-from game import *
-
+import game
 
 class StartButton(Button):
 
@@ -33,6 +32,19 @@ class ShipButton(Button):
         self.parent.update()
 
 
+class PlayerCheckBox(CheckBox):
+
+    def __init__(self, playerClass, **kwargs):
+        super(PlayerCheckBox, self).__init__(**kwargs)
+        self.playerClass = playerClass
+    
+    def on_active(self, selfAgain, isActive):
+        super(PlayerCheckBox, self).on_active(selfAgain, isActive)
+
+        if isActive:
+            self.parent.playerClass = self.playerClass
+
+
 class LeftPannel(GridLayout):
     def __init__(self, **kwargs):
         super(LeftPannel, self).__init__(**kwargs)
@@ -49,20 +61,24 @@ class LeftPannel(GridLayout):
             'gr3': 'Grido, variante 3'
         }
 
-        for num, playerClass in enumerate(PlayerClasses):
-            myCheckBox1 = CheckBox(size_hint_y=5);
-            myCheckBox1.active = (num == 0)
-            myCheckBox1.group = 'group'
-            myCheckBox1.color = (1, 1, 1, 1)
-            myCheckBox1.value = True
-            self.add_widget(myCheckBox1)
+        for num, playerClass in enumerate(game.players.PlayerClasses):
+            checkBox = PlayerCheckBox(playerClass, size_hint_y=5);
+            checkBox.group = 'group'
+            checkBox.color = (1, 1, 1, 1)
+            checkBox.value = True
+            self.add_widget(checkBox)
             self.add_widget(Label(size_hint_y=5, text=playerClassesNames[playerClass]))
+            if num == 0:
+                checkBox.active = True
+                self.playerClass = playerClass
+            else:
+                checkBox.active = False
 
     def getNumberOfGuns(self):
         return int(self.textinput.text)
 
     def getPlayerClass(self):
-        return DinamicoMissilePlayer
+        return self.playerClass
 
 
 class ShipLabel(Label):
@@ -102,10 +118,13 @@ class GridView(GridLayout):
 
     def update(self):
         currentTurn = self.game.getCurrentTurn()
-        for turn, buttons in self.buttons.items():
+        nextShot = self.game.calculateNextShot()
+        for column, buttons in self.buttons.items():
             for button in buttons:
-                if turn is currentTurn % len(self.buttons):
+                if column is currentTurn % len(self.buttons):
                     button.disabled = (button.ship.health == 0)
+                    if button.ship.identifier is nextShot:
+                        button.color = [0, 1, 0.2, 1]
                 else:
                     button.disabled = True
 
@@ -148,7 +167,7 @@ class GameView(GridLayout):
 
     def loadFile(self, fileName):
         numberOfGuns = self.leftPannel.getNumberOfGuns()
-        self.game = loadGame(fileName, numberOfGuns, PlayerClasses['dyn'])
+        self.game = game.loadGame(fileName, numberOfGuns, game.players.PlayerClasses[self.leftPannel.getPlayerClass()])
         self.clear_widgets()
         self.setGridView()
 

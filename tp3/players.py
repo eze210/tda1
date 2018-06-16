@@ -79,7 +79,10 @@ class DinamicoMissilePlayer(MissilePlayer):
         print(self.solution)
 
     def chooseRow(self, currentTurn, numberOfGuns):
-        return self.solution[currentTurn * self.numberOfGuns + numberOfGuns]
+        if currentTurn * self.numberOfGuns + numberOfGuns < len(self.solution):
+            return self.solution[currentTurn * self.numberOfGuns + numberOfGuns]
+        else:
+            return 0
 
 PlayerClasses = {
     'dyn': DinamicoMissilePlayer,
