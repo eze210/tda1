@@ -6,6 +6,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.filechooser import FileChooser, FileChooserIconView
 from kivy.uix.textinput import TextInput
+from kivy.uix.checkbox import CheckBox
 
 from game import *
 
@@ -30,6 +31,38 @@ class ShipButton(Button):
         super(ShipButton, self).on_press()
         self.game.selectRow(self.ship.identifier)
         self.parent.update()
+
+
+class LeftPannel(GridLayout):
+    def __init__(self, **kwargs):
+        super(LeftPannel, self).__init__(**kwargs)
+        self.cols = 2
+
+        self.textinput = TextInput(text='1', input_filter='int')
+        self.add_widget(Label(text='Número de armas:'))
+        self.add_widget(self.textinput)
+
+        playerClassesNames = {
+            'dyn': 'Dinámico',
+            'gr1': 'Grido, variante 1',
+            'gr2': 'Grido, variante 2',
+            'gr3': 'Grido, variante 3'
+        }
+
+        for num, playerClass in enumerate(PlayerClasses):
+            myCheckBox1 = CheckBox(size_hint_y=5);
+            myCheckBox1.active = (num == 0)
+            myCheckBox1.group = 'group'
+            myCheckBox1.color = (1, 1, 1, 1)
+            myCheckBox1.value = True
+            self.add_widget(myCheckBox1)
+            self.add_widget(Label(size_hint_y=5, text=playerClassesNames[playerClass]))
+
+    def getNumberOfGuns(self):
+        return int(self.textinput.text)
+
+    def getPlayerClass(self):
+        return DinamicoMissilePlayer
 
 
 class ShipLabel(Label):
@@ -65,7 +98,6 @@ class GridView(GridLayout):
                 button = ShipButton(ship, game, text="{}".format(d))
                 self.add_widget(button)
                 self.buttons[turn].append(button)
-
         self.update()
 
     def update(self):
@@ -95,21 +127,30 @@ class GameView(GridLayout):
 
     def __init__(self, **kwargs):
         super(GameView, self).__init__(**kwargs)
+        self.setSetupView()
 
-        self.cols = 1
-        self.textinput = TextInput(text='1', input_filter='int', size_hint_y=None, height=25)
-        self.chooser = MyFileChooser(path=".")
+    def setSetupView(self):
+        self.cols = 2
+        self.spacing = [30, 0]
 
-        self.add_widget(self.textinput)
+        self.add_widget(Label(text='PARÁMETROS', bold=True))
+        self.add_widget(Label(text='SELECCIONE UN ARCHIVO', bold=True))
+
+        self.leftPannel = LeftPannel(size_hint_y=10)
+        self.add_widget(self.leftPannel)
+
+        self.chooser = MyFileChooser(path=".", size_hint_x=2)
         self.add_widget(self.chooser)
 
-    def loadFile(self, fileName):
-        numberOfGuns = int(self.textinput.text)
-        self.game = loadGame(fileName, numberOfGuns, PlayerClasses['dyn'])
+    def setGridView(self):
         self.gridView = GridView(self.game)
-        self.remove_widget(self.textinput)
-        self.remove_widget(self.chooser)
         self.add_widget(self.gridView)
+
+    def loadFile(self, fileName):
+        numberOfGuns = self.leftPannel.getNumberOfGuns()
+        self.game = loadGame(fileName, numberOfGuns, PlayerClasses['dyn'])
+        self.clear_widgets()
+        self.setGridView()
 
 
 class GameApp(App):
