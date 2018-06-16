@@ -1,56 +1,4 @@
-from math import sqrt
-
-
-class Vertex(object):
-
-	def __init__(self, coord_x, coord_y):
-		self.x = coord_x
-		self.y = coord_y
-
-	def distance(self, other):
-		deltax = self.x - other.x
-		deltay = self.y - other.y
-		return sqrt((deltax**2) + (deltay**2))
-
-	def __str__(self):
-		return str(self.x)+' '+str(self.y)
-
-	def __repr__(self):
-		return 'V(' + str(self) + ')'
-
-	def __hash__(self):
-		return hash((self.x, self.y))
-
-	def __eq__(self, other):
-		return hash(self) == hash(other)
-
-
-class SearchHandler(object):
-
-	def __init__(self):
-		pass
-
-	def onVisit(self, vertex):
-		pass
-
-	def onAdjacent(self, vertex, adjacent):
-		pass
-
-	def shouldPushAdjacent(self, vertex, adjacent):
-		pass
-
-	def prePushAdjacent(self, vertex, adjacent):
-		pass
-
-	def postPushAdjacent(self, vertex, adjacent):
-		pass
-
-	def postVisit(self, vertex):
-		pass
-
-	def getStructure(self):
-		pass
-
+import decimal
 
 class Graph(object):
 
@@ -67,6 +15,16 @@ class Graph(object):
 		if (not ((vertex1 in self.vertices) and (vertex2 in self.vertices))):
 			raise ValueError("One of the vertices is not in the graph")
 
+		self.edges[vertex1][vertex2] = weight
+
+	def deleteEdge(self, vertex1, vertex2):
+		if (not self.hasEdge()):
+			raise ValueError("The edge does not exist")
+		del self.edges[vertex1][vertex2]
+
+	def updateEdgeWeight(self, vertex1, vertex2, weight):
+		if (not self.hasEdge()):
+			raise ValueError("The edge does not exist")
 		self.edges[vertex1][vertex2] = weight
 
 	def getEdgeWeight(self, vertex1, vertex2):
@@ -90,31 +48,76 @@ class Graph(object):
 	def getAdjacents(self, vertex):
 		return self.edges[vertex]
 
+	def getAdjacentVertices(self, vertex):
+		return self.edges[vertex].keys()
+
 	def getVertices(self):
 		return self.vertices
 
 	def getEdges(self):
-		return self.edges
+		edges = []
+		for vertex1 in self.edges:
+			for vertex2 in self.edges[vertex1]:
+				edges.append((vertex1, vertex2))
+		return edges
 
-	def iterate(self, first, searchHandler):
-		structure = searchHandler.getStructure()
-		structure.push(first)
+	def copy(self):
+		newGraph = Graph()
+		newGraph.vertices = self.vertices[:]
+		newGraph.edges = dict(self.edges)
+		return newGraph
 
-		while not structure.empty():
-			vertex = structure.pop()
-			searchHandler.onVisit(vertex)
+	def createResidualGraph(self):
+		residualGraph = self.copy()
+		for vertex1 in self.vertices:
+			for vertex2 in self.vertices[vertex1]:
+				residualGraph.addVertex(vertex2, vertex1, 0)
+		return residualGraph
 
-			for adjacent in self.getAdjacents(vertex):
-				searchHandler.onAdjacent(vertex, adjacent)
-				if searchHandler.shouldPushAdjacent(vertex, adjacent):
-					searchHandler.prePushAdjacent(vertex, adjacent)
-					structure.push(adjacent)
-					searchHandler.postPushAdjacent(vertex, adjacent)
+	def _bfsEdmondsKarp(self, residualGraph, sink, fathers, M, bfsQueue):
+		while (len(bfsQueue) > 0):
+			u = bfsQueue.pop(0):
+			for v in residualGraph.getAdjacentVertices(u):
+				capacity = residualGraph.getEdgeWeight(u, v)
+				residual_capacity = residualGraph.getEdgeWeight(v, u)
+				if ((capacity - residual_capacity) > 0) and (not fathers[v]):
+  					fathers[v] = u
+  					M[v] = min(M[u], capacity - residual_capacity)
+  					if v != sink:
+  						bfsQueue.append(v)
+  					else:
+  						return M[sink], fathers
+  		return 0, fathers
 
-			searchHandler.postVisit(vertex)
+  	def edmonsKarp(self, source, sink):
+  		residualGraph = self.createResidualGraph()
+  		max_flow = 0
 
-		return searchHandler
+  		while True:
+  			path = [None for x in range(len(self.vertices))]
+  			M = [0 for x in range(len(self.vertices))]
 
+  			M[source] = decimal.Decimal('Infinity')
+  			bfsQueue = []
+  			bfsQueue.append(source)
+
+  			path_flow, path = self._bfsEdmondsKarp(residualGraph, sink, path, M, bfsQueue)
+
+  			if (not path_flow):
+  				break
+
+  			max_flow += path_flow
+
+  			v = sink
+  			while sink != source:
+  				u = fathers[v]
+  				capacity = residualGraph.getEdgeWeight(u, v)
+				residual_capacity = residualGraph.getEdgeWeight(v, u)
+  				residualGraph.updateEdgeWeight(u, v, capacity - path_flow)
+  				residualGraph.updateEdgeWeight(v, u, residualGraph + path_flow)
+  				v = u
+
+  		return max_flow
 
 def defaultGraph():
 	graph = Graph()
