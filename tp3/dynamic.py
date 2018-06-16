@@ -1,5 +1,5 @@
 from collections import defaultdict
-from pretty_printer import *
+from pretty_printer import run_simulation, print_level
 try:
     from math import inf as Infinite
 except Exception as e:

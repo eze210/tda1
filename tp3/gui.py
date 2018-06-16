@@ -62,7 +62,7 @@ class LeftPannel(GridLayout):
         }
 
         for num, playerClass in enumerate(game.players.PlayerClasses):
-            checkBox = PlayerCheckBox(playerClass, size_hint_y=5);
+            checkBox = PlayerCheckBox(playerClass, size_hint_y=5)
             checkBox.group = 'group'
             checkBox.color = (1, 1, 1, 1)
             checkBox.value = True
