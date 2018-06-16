@@ -1,13 +1,13 @@
 from sys import argv
 from math import inf as Infinite
 
-def loadGame(fileName):
+def loadGame(fileName, numberOfGuns):
     playerA = ShipPlayer()
     with open(fileName, "r") as file:
         for line in file:
             playerA.addShip(line)
     ships = playerA.getShips()
-    playerB = Grido3MissilePlayer(ships, numberOfGuns=2)
+    playerB = Grido3MissilePlayer(ships, numberOfGuns)
     return Game(playerA, playerB)
 
 
@@ -15,7 +15,8 @@ def loadGame(fileName):
 Representa un barco con sus puntos de vida y vector de dano
 """
 class Ship:
-    def __init__(self, health, damageList):
+    def __init__(self, identifier, health, damageList):
+        self.identifier = identifier
         self.health = health
         self.damageList = damageList
 
@@ -23,10 +24,10 @@ class Ship:
     Crea un barco a partir de su representacion en string
     """
     @staticmethod
-    def parseShip(strShip):
+    def parseShip(identifier, strShip):
         shipParamsStr = strShip.split(" ")
         shipParams = [int(x) for x in shipParamsStr]
-        return Ship(shipParams[0], shipParams[1:])
+        return Ship(identifier, shipParams[0], shipParams[1:])
 
     """ 
     Aplica el dano segun el turno actual y el vector de danios
@@ -47,7 +48,7 @@ class Ship:
         appliedDamage = 0
         number = 0
         while appliedDamage < self.health:
-            appliedDamage += self.getDamageForCurrentTurn(currentTurn)
+            appliedDamage += self.getDamageForCurrentTurn(currentTurn + number)
             number += 1
         return number
 
@@ -83,7 +84,7 @@ class ShipPlayer:
         print("Cantidad de puntos: {}".format(self.points))
 
     def addShip(self, strShip):
-        ship = Ship.parseShip(strShip)
+        ship = Ship.parseShip(len(self.shipList), strShip)
         self.shipList.append(ship)
 
     def receiveMissile(self, rowNum):
@@ -108,7 +109,6 @@ Representa al jugador B
 """
 class MissilePlayer:
     def __init__(self, shipList, numberOfGuns):
-        print("MissileInit")
         self.shipList = shipList
         self.numberOfGuns = numberOfGuns
 
@@ -174,24 +174,32 @@ class Game:
     def __init__(self, shipPlayer, missilePlayer):
         self.shipPlayer = shipPlayer
         self.missilePlayer = missilePlayer
+        self.gunsUsedInTheCurrentTurn = 0
 
     def play(self):
         while self.shipPlayer.countActiveShips() > 0:
-            for _ in range(self.missilePlayer.numberOfGuns):
-                selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
-                print("Selected ship: {}".format(selectedRow))
-                self.shipPlayer.receiveMissile(selectedRow)
-                if self.shipPlayer.countActiveShips() == 0:
-                    break
+            selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
+            self.selectRow(selectedRow)
 
+    def selectRow(self, selectedRow):
+        print("Selected ship: {}".format(selectedRow))
+        self.shipPlayer.receiveMissile(selectedRow)
+        self.shipPlayer.getStatus()
+
+        self.gunsUsedInTheCurrentTurn += 1
+        if self.gunsUsedInTheCurrentTurn == self.missilePlayer.numberOfGuns:
             self.shipPlayer.step()
-            self.shipPlayer.getStatus()
+            self.gunsUsedInTheCurrentTurn = 0
+
+    def getCurrentTurn(self):
+        return self.shipPlayer.currentTurn
+
 
 if __name__ == "__main__":
     if len(argv) < 2:
-        print("Uso: python ship.py <shipfile>")
+        print("Uso: python shipPlayer.py <shipfile>")
         exit(1)
     fileName = argv[1]
     print("Cargando {0}".format(fileName))
-    game = loadGame(fileName)
+    game = loadGame(fileName, numberOfGuns=2)
     game.play()
