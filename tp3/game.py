@@ -8,10 +8,16 @@ except Exception as e:
 
 
 def loadGame(fileName, numberOfGuns, PlayerClass):
+    Z = None
     playerA = ShipPlayer()
     with open(fileName, "r") as file:
         for line in file:
-            playerA.addShip(line)
+            ship = playerA.addShip(line)
+            if ship.identifier == 0:
+                Z = len(ship.damageList)
+            if Z is not len(ship.damageList):
+                raise RuntimeError('All rows must have the same length')
+                
     ships = playerA.getShips()
     playerB = PlayerClass(ships, numberOfGuns)
     return Game(playerA, playerB)
@@ -25,6 +31,13 @@ class Ship:
         self.identifier = identifier
         self.health = health
         self.damageList = damageList
+
+        ok = False
+        for d in self.damageList:
+            if d > 0:
+                ok = True
+        if not ok:
+            raise RuntimeError('Some value in damages list must be greater than zero')
 
     """
     Crea un barco a partir de su representacion en string
@@ -92,6 +105,7 @@ class ShipPlayer:
     def addShip(self, strShip):
         ship = Ship.parseShip(len(self.shipList), strShip)
         self.shipList.append(ship)
+        return ship
 
     def receiveMissile(self, rowNum):
         self.shipList[rowNum].applyDamage(self.currentTurn)
