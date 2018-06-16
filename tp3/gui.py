@@ -51,7 +51,7 @@ class LeftPannel(GridLayout):
         self.cols = 2
 
         self.textinput = TextInput(text='1', input_filter='int')
-        self.add_widget(Label(text='Número de armas:'))
+        self.add_widget(Label(text='Número de armas:', size_hint_x=4))
         self.add_widget(self.textinput)
 
         playerClassesNames = {
