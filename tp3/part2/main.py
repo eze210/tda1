@@ -11,7 +11,7 @@ def edge_cmp(edge1, edge2):
 
     return -1;
 
-def maximun_capacity_edges(graph):
+def maximun_capacity_edge(graph):
     vertices = graph.getVertices();
     max_capacity = -1
     max_edge = None
@@ -19,13 +19,12 @@ def maximun_capacity_edges(graph):
     for vertex1 in vertices:
         adjacents = graph.getAdjacentVertices(vertex1)
         for vertex2 in adjacents:
-            edge = (vertex1, vertex2)
             capacity = graph.getEdgeWeight(vertex1, vertex2)
             if (capacity > max_capacity):
                 max_capacity = capacity
-                max_edge = edge
+                max_edge = (vertex1, vertex2)
 
-    return edge
+    return max_edge
 
 def minimun_flow_edge(graph, source, sink):
     edges = graph.getEdges()
@@ -69,8 +68,22 @@ def buildGraph(file_name):
             
 if __name__ == '__main__':
     g = buildGraph(file_name="./dataset/redsecreta.map")
-    print(maximun_capacity_edges(g))
-    print(minimun_flow_edge(g, 0, 1))
+    max_capacity_edge = maximun_capacity_edge(g)
+    opt_edge = minimun_flow_edge(g, 0, 1)
+
+    print("Maximun flow: "+str(g.edmonsKarp(0, 1)))
+
+    edge_weight = g.getEdgeWeight(max_capacity_edge[0], max_capacity_edge[1])
+    g.deleteEdge(max_capacity_edge[0], max_capacity_edge[1])
+    print("Max capacity edge: "+str(max_capacity_edge))
+    print("Maximun flow without max capacity edge: "+str(g.edmonsKarp(0, 1)))
+    g.addEdge(max_capacity_edge[0], max_capacity_edge[1], edge_weight)
+
+    edge_weight = g.getEdgeWeight(opt_edge[0], opt_edge[1])
+    g.deleteEdge(opt_edge[0], opt_edge[1])
+    print("Optimal edge: "+str(opt_edge))
+    print("Maximun flow without optimal edge: "+str(g.edmonsKarp(0, 1)))
+    g.addEdge(opt_edge[0], opt_edge[1], edge_weight)
 
 
 
