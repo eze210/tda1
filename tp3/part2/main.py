@@ -68,8 +68,22 @@ def buildGraph(file_name):
             
 if __name__ == '__main__':
     g = buildGraph(file_name="./dataset/redsecreta.map")
-    print(maximun_capacity_edge(g))
-    print(minimun_flow_edge(g, 0, 1))
+    max_capacity_edge = maximun_capacity_edge(g)
+    opt_edge = minimun_flow_edge(g, 0, 1)
+
+    print("Maximun flow: "+str(g.edmonsKarp(0, 1)))
+
+    edge_weight = g.getEdgeWeight(max_capacity_edge[0], max_capacity_edge[1])
+    g.deleteEdge(max_capacity_edge[0], max_capacity_edge[1])
+    print("Max capacity edge: "+str(max_capacity_edge))
+    print("Maximun flow without max capacity edge: "+str(g.edmonsKarp(0, 1)))
+    g.addEdge(max_capacity_edge[0], max_capacity_edge[1], edge_weight)
+
+    edge_weight = g.getEdgeWeight(opt_edge[0], opt_edge[1])
+    g.deleteEdge(opt_edge[0], opt_edge[1])
+    print("Optimal edge: "+str(opt_edge))
+    print("Maximun flow without optimal edge: "+str(g.edmonsKarp(0, 1)))
+    g.addEdge(opt_edge[0], opt_edge[1], edge_weight)
 
 
 
