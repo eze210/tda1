@@ -1,18 +1,7 @@
 from structures.graph import Graph
 
-def edge_cmp(edge1, edge2):
-    weight1 = edge1[2]
-    weight2 = edge2[2]
-
-    if (weight1 > weight2):
-        return 1
-    if (weight1 == weight2):
-        return 0
-
-    return -1;
-
 def maximun_capacity_edge(graph):
-    vertices = graph.getVertices();
+    vertices = graph.getVertices()
     max_capacity = -1
     max_edge = None
 
