@@ -24,7 +24,10 @@ class Graph(object):
 	def updateEdgeWeight(self, vertex1, vertex2, weight):
 		if (not self.hasEdge(vertex1, vertex2)):
 			raise ValueError("The edge does not exist")
-		self.edges[vertex1][vertex2] = weight
+		if (not weight):
+			del self.edges[vertex1][vertex2]
+		else:
+			self.edges[vertex1][vertex2] = weight
 
 	def getEdgeWeight(self, vertex1, vertex2):
 		if not vertex2 in self.edges[vertex1]:
