@@ -1,13 +1,25 @@
 from sys import argv
-from math import inf as Infinite
+import players
+from pretty_printer import run_simulation
+try:
+    from math import inf as Infinite
+except Exception as e:
+    Infinite = float('inf')
 
-def loadGame(fileName, numberOfGuns):
+
+def loadGame(fileName, numberOfGuns, PlayerClass):
+    Z = None
     playerA = ShipPlayer()
     with open(fileName, "r") as file:
         for line in file:
-            playerA.addShip(line)
+            ship = playerA.addShip(line)
+            if ship.identifier == 0:
+                Z = len(ship.damageList)
+            if Z is not len(ship.damageList):
+                raise RuntimeError('All rows must have the same length')
+                
     ships = playerA.getShips()
-    playerB = Grido3MissilePlayer(ships, numberOfGuns)
+    playerB = PlayerClass(ships, numberOfGuns)
     return Game(playerA, playerB)
 
 
@@ -19,6 +31,13 @@ class Ship:
         self.identifier = identifier
         self.health = health
         self.damageList = damageList
+
+        ok = False
+        for d in self.damageList:
+            if d > 0:
+                ok = True
+        if not ok:
+            raise RuntimeError('Some value in damages list must be greater than zero')
 
     """
     Crea un barco a partir de su representacion en string
@@ -86,6 +105,7 @@ class ShipPlayer:
     def addShip(self, strShip):
         ship = Ship.parseShip(len(self.shipList), strShip)
         self.shipList.append(ship)
+        return ship
 
     def receiveMissile(self, rowNum):
         self.shipList[rowNum].applyDamage(self.currentTurn)
@@ -105,69 +125,6 @@ class ShipPlayer:
 
 
 """
-Representa al jugador B
-"""
-class MissilePlayer:
-    def __init__(self, shipList, numberOfGuns):
-        self.shipList = shipList
-        self.numberOfGuns = numberOfGuns
-
-    def playTurn(self, currentTurn):
-        return self.chooseRow(currentTurn)
-
-    def chooseRow(self, currentTurn):
-        return 0
-
-
-class Grido1MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn):
-        minimumNumberOfShots = Infinite
-        selectedRow = 0
-        for row, ship in enumerate(self.shipList):
-            if not ship.health > 0:
-                continue
-
-            numberOfShots = ship.getNumberOfConsecutiveShotsToDie(currentTurn)
-            if numberOfShots < minimumNumberOfShots:
-                selectedRow = row
-                minimumNumberOfShots = numberOfShots
-        
-        return selectedRow
-
-
-class Grido2MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn):
-        maximumDamage = 0
-        selectedRow = 0
-        for row, ship in enumerate(self.shipList):
-            if not ship.health > 0:
-                continue
-
-            damage = ship.getDamageForCurrentTurn(currentTurn)
-            if damage > maximumDamage:
-                selectedRow = row
-                maximumDamage = damage
-        
-        return selectedRow
-
-
-class Grido3MissilePlayer(MissilePlayer):
-    def chooseRow(self, currentTurn):
-        maximumDamagePercentage = 0
-        selectedRow = 0
-        for row, ship in enumerate(self.shipList):
-            if not ship.health > 0:
-                continue
-
-            damagePercentage = ship.getDamagePercentageForCurrentTurn(currentTurn)
-            if damagePercentage > maximumDamagePercentage:
-                selectedRow = row
-                maximumDamagePercentage = damagePercentage
-        
-        return selectedRow
-
-
-"""
 Representa un juego
 """
 class Game:
@@ -175,31 +132,44 @@ class Game:
         self.shipPlayer = shipPlayer
         self.missilePlayer = missilePlayer
         self.gunsUsedInTheCurrentTurn = 0
+        
+        self.turnSequence = []
+        self.completeSequence = []
 
     def play(self):
         while self.shipPlayer.countActiveShips() > 0:
-            selectedRow = self.missilePlayer.playTurn(self.shipPlayer.getTurn())
+            selectedRow = self.calculateNextShot()
             self.selectRow(selectedRow)
+        return self.shipPlayer.points, tuple(self.completeSequence)
 
     def selectRow(self, selectedRow):
         print("Selected ship: {}".format(selectedRow))
         self.shipPlayer.receiveMissile(selectedRow)
-        self.shipPlayer.getStatus()
 
         self.gunsUsedInTheCurrentTurn += 1
+        self.turnSequence.append(selectedRow)
         if self.gunsUsedInTheCurrentTurn == self.missilePlayer.numberOfGuns:
             self.shipPlayer.step()
             self.gunsUsedInTheCurrentTurn = 0
+            self.completeSequence.append(tuple(self.turnSequence))
+            self.turnSequence = []
+
+        self.shipPlayer.getStatus()
 
     def getCurrentTurn(self):
         return self.shipPlayer.currentTurn
+    
+    def calculateNextShot(self):
+        return self.missilePlayer.playTurn(self.shipPlayer.getTurn(), self.gunsUsedInTheCurrentTurn)
 
 
 if __name__ == "__main__":
-    if len(argv) < 2:
-        print("Uso: python shipPlayer.py <shipfile>")
+    if len(argv) < 4:
+        print("Usage: python game.py <gridfile> <guns> <playerclass>")
         exit(1)
     fileName = argv[1]
-    print("Cargando {0}".format(fileName))
-    game = loadGame(fileName, numberOfGuns=2)
-    game.play()
+    numberOfGuns = int(argv[2])
+    PlayerClass = players.PlayerClasses[argv[3]]
+    print("Loading {0}...".format(fileName))
+    game = loadGame(fileName, numberOfGuns, PlayerClass)
+    print(game.play())
