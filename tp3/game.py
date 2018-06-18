@@ -184,3 +184,6 @@ if __name__ == "__main__":
 
     # runs and shows the game using the obtained solution
     run_simulation(level, ships_health, solution[1])
+
+    print("Turnos totales:", len(solution[1]))
+    print("Puntos acumulados:", solution[0])
