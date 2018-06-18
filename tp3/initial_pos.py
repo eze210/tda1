@@ -16,20 +16,24 @@ def build_dmg_grid(dmg_grid, ship_positions):
 
 
 def solve_positions(D, dmg_grid, hitpoints, num_shots, ship_positions):
+    if ship_positions in D:
+        return D[ship_positions]
+
     num_ships = len(hitpoints)
     num_cols = len(dmg_grid[0])
     if num_ships == len(ship_positions):
         dmg_grid = build_dmg_grid(dmg_grid, ship_positions)
         points, _ = solve_game(dmg_grid, hitpoints, num_shots)
-        return points, ship_positions
-
-    best_score, best_positions = 0, tuple()
-    for i in range(num_ships - len(ship_positions)):
-        for j in range(num_cols):
-            new_score, new_positions = solve_positions(D, dmg_grid, hitpoints, num_shots, ship_positions + tuple([j]))
-            if new_score > best_score:
-                best_score, best_positions = new_score, new_positions
-    return best_score, best_positions
+        D[ship_positions] = points, ship_positions
+    else:
+        best_score, best_positions = 0, tuple()
+        for i in range(num_ships - len(ship_positions)):
+            for j in range(num_cols):
+                new_score, new_positions = solve_positions(D, dmg_grid, hitpoints, num_shots, ship_positions + tuple([j]))
+                if new_score > best_score:
+                    best_score, best_positions = new_score, new_positions
+        D[ship_positions] = best_score, best_positions
+    return D[ship_positions]
 
 
 def get_ship_positions(dmg_grid, hitpoints, num_shots):
@@ -49,7 +53,7 @@ if __name__ == '__main__':
     ]
     ships_health = [800, 800, 800]
     print_level(ships_health, level)
-    shots_per_turn = 2
+    shots_per_turn = 4
 
     # finds the solution
     solution = solve_game(level, ships_health, shots_per_turn)
