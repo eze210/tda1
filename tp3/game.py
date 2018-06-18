@@ -143,18 +143,22 @@ class Game:
         return self.shipPlayer.points, tuple(self.completeSequence)
 
     def selectRow(self, selectedRow):
-        print("Selected ship: {}".format(selectedRow))
         self.shipPlayer.receiveMissile(selectedRow)
 
         self.gunsUsedInTheCurrentTurn += 1
         self.turnSequence.append(selectedRow)
         if self.gunsUsedInTheCurrentTurn == self.missilePlayer.numberOfGuns:
+            print("Turno:", self.shipPlayer.getTurn())
+            print("Cantidad de barcos disponibles:", self.shipPlayer.countActiveShips())
+            print("Daños potenciales:", [s.getDamageForCurrentTurn(self.shipPlayer.getTurn()) for s in self.shipPlayer.shipList])
+            print("Barcos elegidos:", self.turnSequence)
+            self.shipPlayer.getStatus()
+            print()
             self.shipPlayer.step()
             self.gunsUsedInTheCurrentTurn = 0
             self.completeSequence.append(tuple(self.turnSequence))
             self.turnSequence = []
 
-        self.shipPlayer.getStatus()
 
     def getCurrentTurn(self):
         return self.shipPlayer.currentTurn
@@ -172,4 +176,11 @@ if __name__ == "__main__":
     PlayerClass = players.PlayerClasses[argv[3]]
     print("Loading {0}...".format(fileName))
     game = loadGame(fileName, numberOfGuns, PlayerClass)
-    print(game.play())
+
+    level = [s.damageList for s in game.shipPlayer.shipList]
+    ships_health = [s.health for s in game.shipPlayer.shipList]
+
+    solution = game.play()
+
+    # runs and shows the game using the obtained solution
+    run_simulation(level, ships_health, solution[1])

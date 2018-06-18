@@ -26,6 +26,7 @@ def print_hp(boats_health, hit_index, dmg, turn):
 
 def run_simulation(level, boats_health, solution):
 	"""Given a sequence of shots, simulates and shows a step-by-step execution of the game."""
+	print("Pretty print:")
 
 	for turn, sequence in enumerate(solution):
 		for boat in sequence:
