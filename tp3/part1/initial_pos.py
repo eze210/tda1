@@ -21,12 +21,8 @@ def build_dmg_grid(dmg_grid, ship_positions):
     return new_grid
 
 
-def solve_positions(D, dmg_grid, hitpoints, num_shots, ship_positions, solver):
+def solve_positions(dmg_grid, hitpoints, num_shots, ship_positions, solver):
     """Returns the initial ship positions that maximize the score of the `solver`."""
-
-    # checks if this subproblem was already solved
-    if ship_positions in D:
-        return D[ship_positions]
 
     num_ships = len(hitpoints)
     num_cols = len(dmg_grid[0])
@@ -35,18 +31,18 @@ def solve_positions(D, dmg_grid, hitpoints, num_shots, ship_positions, solver):
     if num_ships == len(ship_positions):
         dmg_grid = build_dmg_grid(dmg_grid, ship_positions)
         points, _ = solver(dmg_grid, hitpoints, num_shots)
-        D[ship_positions] = points, ship_positions
+        rv = points, ship_positions
     else:
         best_score, best_positions = 0, tuple()
 
         # goes through every possible position for the n'th ship and finds the position
         # of the ships (not already positioned) that maximizes the score
         for j in range(num_cols):
-            new_score, new_positions = solve_positions(D, dmg_grid, hitpoints, num_shots, ship_positions + tuple([j]), solver)
+            new_score, new_positions = solve_positions(dmg_grid, hitpoints, num_shots, ship_positions + tuple([j]), solver)
             if new_score > best_score:
                 best_score, best_positions = new_score, new_positions
-        D[ship_positions] = best_score, best_positions
-    return D[ship_positions]
+        rv = best_score, best_positions
+    return rv
 
 
 def get_ship_positions(dmg_grid, hitpoints, num_shots, solver):
@@ -56,8 +52,7 @@ def get_ship_positions(dmg_grid, hitpoints, num_shots, solver):
 	`num_shots` the total number of shots allowed in a single turn.
     `solver` an algorithm that solves the game and receives the 3 previous parameters.
     """
-    D = {}
-    return solve_positions(D, dmg_grid, hitpoints, num_shots, tuple(), solver)[1]
+    return solve_positions(dmg_grid, hitpoints, num_shots, tuple(), solver)[1]
 
 
 if __name__ == '__main__':
