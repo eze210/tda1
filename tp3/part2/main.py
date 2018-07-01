@@ -1,4 +1,5 @@
-from structures.graph import Graph
+from structures.graph import Graph, MaxFlowEdge
+from heapq import heappush, heappop
 
 def maximun_capacity_edge(graph):
     vertices = graph.getVertices()
@@ -26,20 +27,20 @@ def minimun_flow_edge(graph, source, sink):
     min_max_flow = graph.edmonsKarp(source, sink)
 
     graph.addEdge(max_edge[0], max_edge[1], edge_weight)
+    edge_heap = []
 
     for i in range(1, len(edges)):
         edge = edges[i]
         edge_weight = graph.getEdgeWeight(edge[0], edge[1])
         graph.deleteEdge(edge[0], edge[1])
         max_flow = graph.edmonsKarp(source, sink)
-
-        if (max_flow < min_max_flow):
-            min_max_flow = max_flow
-            max_edge = edge
-
+        flow_edge = MaxFlowEdge(max_flow, edge[0], edge[1])
+        heappush(edge_heap, flow_edge)
         graph.addEdge(edge[0], edge[1], edge_weight)
 
-    return max_edge
+    max_edge = heappop(edge_heap)
+    second_max_edge = heappop(edge_heap)
+    return [max_edge, second_max_edge]
 
 def buildGraph(file_name):
     g = Graph()
@@ -56,9 +57,11 @@ def buildGraph(file_name):
     return g
             
 if __name__ == '__main__':
-    g = buildGraph(file_name="./dataset/redsecreta3.map")
+    g = buildGraph(file_name="./dataset/redsecreta.map")
     max_capacity_edge = maximun_capacity_edge(g)
-    opt_edge = minimun_flow_edge(g, 0, 1)
+    opt_edges = minimun_flow_edge(g, 0, 1)
+    opt_edge = opt_edges[0]
+    second_opt_edge = opt_edges[1]
 
     print("Maximun flow: "+str(g.edmonsKarp(0, 1)))
 
@@ -68,12 +71,14 @@ if __name__ == '__main__':
     print("Maximun flow without max capacity edge: "+str(g.edmonsKarp(0, 1)))
     g.addEdge(max_capacity_edge[0], max_capacity_edge[1], edge_weight)
 
-    edge_weight = g.getEdgeWeight(opt_edge[0], opt_edge[1])
-    g.deleteEdge(opt_edge[0], opt_edge[1])
-    print("Optimal edge: "+str(opt_edge))
+    edge_weight = g.getEdgeWeight(opt_edge.vertex1, opt_edge.vertex2)
+    g.deleteEdge(opt_edge.vertex1, opt_edge.vertex2)
+    print("Optimal edge: ", opt_edge.vertex1, opt_edge.vertex2)
     print("Maximun flow without optimal edge: "+str(g.edmonsKarp(0, 1)))
-    g.addEdge(opt_edge[0], opt_edge[1], edge_weight)
+    g.addEdge(opt_edge.vertex1, opt_edge.vertex2, edge_weight)
 
-
-
-
+    edge_weight = g.getEdgeWeight(second_opt_edge.vertex1, second_opt_edge.vertex2)
+    g.deleteEdge(second_opt_edge.vertex1, second_opt_edge.vertex2)
+    print("Second ptimal edge: ", second_opt_edge.vertex1, second_opt_edge.vertex2)
+    print("Maximun flow without 2nd optimal edge: "+str(g.edmonsKarp(0, 1)))
+    g.addEdge(second_opt_edge.vertex1, second_opt_edge.vertex2, edge_weight)

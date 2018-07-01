@@ -1,5 +1,17 @@
 import decimal
 
+class MaxFlowEdge(object):
+	def __init__(self, flow, vertex1, vertex2):
+		self.flow = flow
+		self.vertex1 = vertex1
+		self.vertex2 = vertex2
+
+	def __eq__(self, other):
+		return self.flow == other.flow and self.vertex1 == other.vertex1 and self.vertex2 == other.vertex2
+
+	def __lt__(self, other):
+		return self.flow < other.flow
+
 class Graph(object):
 
 	def __init__(self, real_distance = False):
